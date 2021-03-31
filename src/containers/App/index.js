@@ -1,36 +1,28 @@
-import logo from '../../logo.svg';
-import './styles.css';
-import { Weather, Spinner } from '../../components';
-import { fetch, branch  } from '../../hoc';
-import { compose, pipe, prop, replace, isEmpty } from 'ramda';
-import { projection } from '../../utils';
+import React, { lazy, Suspense } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Container from '@material-ui/core/Container';
 
-const weatherUrlByLocation = ({lat, lon}) =>
-  `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`
-
-const parseResponse = projection({
-  temp: 'main.temp',
-  description: 'weather.0.description',
-  wind: 'wind'
-});
-
-const withData = compose(
-  fetch(weatherUrlByLocation, parseResponse),
-  branch(prop('loading'), Spinner)
-)
-
-const WeatherContainer = withData(Weather);
+const Weather = lazy(() => import('../../enhanced/Weather'));
+const Settings = lazy(() => import('../../components/Settings'));
+const BottomNav = lazy(() => import('../../components/BottomNav'));
+const AppBar = lazy(() => import('../../components/AppBar'));
 
 export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Grumpy Weather
-        </p>
-      </header>
-      <WeatherContainer lat="10" lon="20" />
-    </div>
+    <Router>
+      <Suspense fallback={<div>Loading...</div>}>
+      <AppBar />
+      <Container maxWidth="sm">
+        <Switch>
+          <Route path="/settings">
+            <Settings />
+          </Route>
+          <Route path="/">
+          <Weather lat="40.416775" lon="-3.703790" />
+          </Route>
+        </Switch>
+      </Container>
+      </Suspense>
+    </Router>
   );
 }
