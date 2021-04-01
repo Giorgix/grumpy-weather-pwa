@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { Link } from "react-router-dom";
 import { fade, makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -17,6 +17,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+
+const Settings = lazy(() => import('../../enhanced/Settings'));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -138,9 +140,14 @@ export default function ButtonAppBar() {
             <ListItemIcon><WbSunnyIcon /></ListItemIcon>
             <ListItemText primary="Weather" />
           </ListItem>
-          <ListItem component={Link} to="/settings" key="settings" onClick={handleDrawerClose}>
+          <ListItem component={Link} to="/settings" key="settings-page" onClick={handleDrawerClose}>
             <ListItemIcon><SettingsIcon /></ListItemIcon>
             <ListItemText primary="Settings" />
+          </ListItem>
+        </List>
+        <List className={classes.list}>
+          <ListItem key="settings">
+            <Settings />
           </ListItem>
         </List>
       </Drawer>

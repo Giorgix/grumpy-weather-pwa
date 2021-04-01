@@ -1,13 +1,15 @@
 import { lazy } from "react";
 import { Spinner } from '../../components';
-import { fetch, branch  } from '../../hoc';
+import { fetch, branch, withStoreState  } from '../../hoc';
+import { selectTemperature } from '../../redux/temperature/temperatureSlice'
+import { selectLocation } from '../../redux/location/locationSlice'
 import { compose, pipe, prop, replace, isEmpty, none } from 'ramda';
 import { projection } from '../../utils';
 
 const Weather = lazy(() => import('../../components/Weather'));
 
-const weatherUrlByLocation = ({lat, lon}) =>
-  `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`
+const weatherUrlByLocation = ({location}) =>
+  `http://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`
 
 const parseResponse = projection({
   temp: 'main.temp',
@@ -16,8 +18,10 @@ const parseResponse = projection({
 });
 
 const withData = compose(
+  withStoreState(selectLocation, 'location'),
+  withStoreState(selectTemperature, 'tempUnit'),
   fetch(weatherUrlByLocation, parseResponse),
-  branch(prop('loading'), Spinner)
+  branch(prop('loading'), Spinner),
 )
 
 export default withData(Weather);
