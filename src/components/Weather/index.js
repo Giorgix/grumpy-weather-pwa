@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Weather({temp, description, wind}) {
+export default function Weather({temp, description, wind, tempUnit, location}) {
   const classes = useStyles();
   return (
       <Card className={classes.root}>
@@ -32,7 +32,7 @@ export default function Weather({temp, description, wind}) {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            Current temp is {temp}
+            Current temp in {location.name} is {temp} {tempUnit === 'metric'? 'ºC' : 'ºF'}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             The feeling is {description}
