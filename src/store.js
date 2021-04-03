@@ -14,7 +14,7 @@ import temperatureReducer from './redux/temperature/temperatureSlice';
 import locationReducer from './redux/location/locationSlice';
 
 const rootReducer = combineReducers({
-  // use "posts" to persist this slice
+  // use "temperature and/or location" to persist these slices
   temperature: temperatureReducer,
   location: locationReducer,
 })

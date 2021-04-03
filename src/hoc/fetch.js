@@ -8,7 +8,6 @@ const fetchHoc = curry((url, mapper, BaseComponent) => props => {
   const status = {loading: true, completed: false};
   const initialState = merge(props, status);
   const [data, changeState] = useState(initialState);
-
   const fetchData = async () => {
     await delay(randomNumber(250, 3000));
     await fetch(url(props))
@@ -22,7 +21,7 @@ const fetchHoc = curry((url, mapper, BaseComponent) => props => {
     fetchData()
   }, []);
 
-  return <BaseComponent {...merge(data, props)} />;
+  return <BaseComponent {...merge(props, data)} />;
 });
 
 export default fetchHoc;

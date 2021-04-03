@@ -4,7 +4,6 @@ import Container from '@material-ui/core/Container';
 
 const Weather = lazy(() => import('../../enhanced/Weather'));
 const Settings = lazy(() => import('../../enhanced/Settings'));
-const BottomNav = lazy(() => import('../../components/BottomNav'));
 const AppBar = lazy(() => import('../../components/AppBar'));
 
 export default function App() {
@@ -18,7 +17,7 @@ export default function App() {
             <Settings />
           </Route>
           <Route path="/">
-          <Weather />
+          <Weather test="testing" />
           </Route>
         </Switch>
       </Container>
