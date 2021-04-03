@@ -10,19 +10,24 @@ import {
   REGISTER,
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage';
-import temperatureReducer from './redux/temperature/temperatureSlice';
+import weatherReducer from './redux/weather/weatherSlice';
 import locationReducer from './redux/location/locationSlice';
 
+const weatherPersistConfig = {
+  key: 'weather',
+  storage,
+  blacklist: ['loading', 'completed']
+}
 const rootReducer = combineReducers({
   // use "temperature and/or location" to persist these slices
-  temperature: temperatureReducer,
+  weather: weatherReducer,
   location: locationReducer,
 })
 const persistConfig = {
   key: 'root',
-  version: 1,
-  storage,
+  storage
 }
+
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 const store = configureStore({
