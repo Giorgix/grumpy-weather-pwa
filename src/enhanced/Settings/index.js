@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { useDispatch } from 'react-redux'
-import { withHandlers, withStoreState, withDispatcher } from '../../hoc';
+import { withHandlers, withStoreState, withDispatcher, withAction } from '../../hoc';
 import { compose } from 'ramda';
 import {
   switchUnit,

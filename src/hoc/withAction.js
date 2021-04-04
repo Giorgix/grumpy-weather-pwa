@@ -11,7 +11,7 @@ export default curry((action, thunk, thunkData, BaseComponent) => props => {
     } else {
       props.dispatcher(action);
     }
-  }, [])
+  }, props[thunkData] ? [props[thunkData]] : [])
 
   return <BaseComponent {...props} />;
 })

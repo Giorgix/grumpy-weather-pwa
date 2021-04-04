@@ -23,9 +23,8 @@ const withInitialData = compose(
   // The geoposition data could be requested as an effect or an action
   //withAsyncEffect(geoFindMePromise, []),
   withDispatcher(useDispatch),
-  withAction(getLocation, false, false),
+  //withAction(getLocation, false, false),
   withStoreState(selectLocation, 'location'),
-  withStoreState(selectWeather, 'weather'),
   branch(({location}) => location && isNil(location.current_lat), NotFound),
 )
 
@@ -33,6 +32,7 @@ const withAsyncRequest = compose(
   // The weather data could be requested as an effect or an action
   //fetch(weatherUrlByLocation, parseResponse),
   withAction(null, getWeather, 'location'),
+  withStoreState(selectWeather, 'weather'),
   branch(path(['weather', 'loading']), Spinner),
   branch(({weather}) => weather.completed && isNil(weather.data), NotFound),
 )

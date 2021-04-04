@@ -7,3 +7,4 @@ export {default as AppBar} from './AppBar';
 export {default as NotFound} from './NotFound';
 export {default as DateString} from './Date';
 export {default as Temperature} from './Temperature';
+export {default as SearchBox} from './SearchBox';
