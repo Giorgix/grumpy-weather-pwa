@@ -1,8 +1,8 @@
 import React from 'react';
 
-const NotFound = () => (
+const NotFound = (text) => () => (
   <div>
-    <h2>NOT FOUND :(</h2>
+    <h2>{text}</h2>
   </div>
 );
 

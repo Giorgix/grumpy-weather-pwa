@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { identity } from 'ramda';
+import { path } from 'ramda';
 import { geoFindMePromise, delay, randomNumber, projection } from '../../utils';
 export const locationSlice = createSlice({
   name: 'location',
@@ -41,8 +41,21 @@ export async function getLocation(dispatch, getState) {
 // location = lat and lon coordinates => 'City/Country name'
 const geoCodeUrlByLocation = (location) => `https://api.opencagedata.com/geocode/v1/json?q=${location}&key=f62e33ffb4294e3cb537350fde241077`;
 
+const getLocationName = (data) => {
+  const locationInfo = {
+    quarter: path(['results', '0', 'components', 'quarter'], data),
+    suburb: path(['results', '0', 'components', 'suburb'], data),
+    city: path(['results', '0', 'components', 'city'], data),
+    state: path(['results', '0', 'components', 'state'], data),
+  }
+  return locationInfo.city &&
+    (locationInfo.quarter ? locationInfo.quarter : (locationInfo.suburb || locationInfo.state))
+      .concat(', ')
+      .concat(locationInfo.city);
+}
+
 const parseGeoCodeResponse = projection({
-  location_results: 'results',
+  name: getLocationName,
   current_lat: 'results.0.geometry.lat',
   current_lon: 'results.0.geometry.lng',
 });

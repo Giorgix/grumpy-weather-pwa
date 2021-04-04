@@ -25,7 +25,7 @@ const withInitialData = compose(
   withDispatcher(useDispatch),
   //withAction(getLocation, false, false),
   withStoreState(selectLocation, 'location'),
-  branch(({location}) => location && isNil(location.current_lat), NotFound),
+  branch(({location}) => location && isNil(location.current_lat), NotFound('Location not found')),
 )
 
 const withAsyncRequest = compose(
@@ -34,7 +34,7 @@ const withAsyncRequest = compose(
   withAction(null, getWeather, 'location'),
   withStoreState(selectWeather, 'weather'),
   branch(path(['weather', 'loading']), Spinner),
-  branch(({weather}) => weather.completed && isNil(weather.data), NotFound),
+  branch(({weather}) => weather.completed && isNil(weather.data), NotFound('Weather not found')),
 )
 
 const enhance = compose(
