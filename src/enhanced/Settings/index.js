@@ -4,12 +4,12 @@ import { withHandlers, withStoreState, withDispatcher } from '../../hoc';
 import { compose } from 'ramda';
 import {
   switchUnit,
-  selectTemperature
-} from '../../redux/temperature/temperatureSlice'
+  selectWeatherUnit
+} from '../../redux/weather/weatherSlice'
 
 const Settings = lazy(() => import('../../components/Settings'));
 const enhanced = compose(
-  withStoreState(selectTemperature, 'tempUnit'),
+  withStoreState(selectWeatherUnit, 'tempUnit'),
   withDispatcher(useDispatch),
   withHandlers({
     changeTempUnit: ({dispatcher}) => () => dispatcher(switchUnit())

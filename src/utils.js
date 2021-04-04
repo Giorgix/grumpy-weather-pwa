@@ -22,3 +22,36 @@ export const randomNumber = (min, max) => {
 };
 
 export const delay = t => new Promise(resolve => setTimeout(resolve, t));
+
+const geoFindMe = (callback) => {
+
+
+  function success(position) {
+    console.log('GOT POSITION: ', position);
+    const latitude  = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    callback(null, {current_lat: latitude, current_lon: longitude})
+    //changeState({current_lat: latitude, current_lon: longitude});
+  }
+
+  function error() {
+    console.error('Unable to retrieve your location');
+    callback(new Error('Error getting location'))
+  }
+
+  if(!navigator.geolocation) {
+    console.warn('Geolocation is not supported by your browser')
+  } else {
+    navigator.geolocation.getCurrentPosition(success, error);
+  }
+
+}
+
+export const geoFindMePromise = function() {
+  return new Promise((resolve, reject) => {
+    geoFindMe((err, data) => {
+      if (err) reject(err);
+      else resolve(data)
+    })
+  })
+}

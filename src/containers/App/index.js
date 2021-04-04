@@ -9,7 +9,7 @@ const AppBar = lazy(() => import('../../components/AppBar'));
 export default function App() {
   return (
     <Router>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div>Suspense Loading...</div>}>
       <AppBar />
       <Container maxWidth="sm">
         <Switch>
