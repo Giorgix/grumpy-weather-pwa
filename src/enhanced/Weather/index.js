@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { useDispatch } from 'react-redux'
-import { Spinner, LocalSpinner, NotFound } from '../../components';
+import { Spinner, NotFound } from '../../components';
 import { fetch, branch, withStoreState, withAsyncEffect, withAction, withDispatcher } from '../../hoc';
 import { selectWeather, getWeather } from '../../redux/weather/weatherSlice'
 import { selectLocation, getLocation } from '../../redux/location/locationSlice'
@@ -18,7 +18,6 @@ const parseResponse = projection({
   wind: 'wind'
 });
 
-const getWeatherThunk = getWeather
 
 const withInitialData = compose(
   // The geoposition data could be requested as an effect or an action
@@ -40,6 +39,7 @@ const withAsyncRequest = compose(
 
 const enhance = compose(
   withInitialData,
-  withAsyncRequest)
+  withAsyncRequest
+)
 
 export default enhance(Weather);

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function DateData({
+export default function DateString({
   date,
   prefix,
   format = {
@@ -11,8 +11,8 @@ export default function DateData({
   },
   locale = 'es-ES'}) {
   return (
-    <div>
+    <>
       {`${prefix} ${new Date(date).toLocaleTimeString(locale, format)}`}
-    </div>
+    </>
   )
 }

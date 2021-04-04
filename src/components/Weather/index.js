@@ -9,7 +9,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import weatherBg from './weather-bg.jpg'; // Tell webpack this JS file uses this image
 import theme from '../../theme';
-const DateData = lazy(() => import('../Date'));
+const DateString = lazy(() => import('../Date'));
+const Temperature = lazy(() => import('../Temperature'));
 
 const useStyles = makeStyles({
   root: {
@@ -33,14 +34,14 @@ export default function Weather({weather, location}) {
           title="Contemplative Reptile"
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            Current temp in {location.name} is {weather.data.temp} {weather.unit === 'metric'? 'ºC' : 'ºF'}
+          <Typography gutterBottom variant="h3" component="h2">
+            <Temperature degrees={weather.data.temp} unitType={weather.unit} />
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             The feeling is {weather.data.description}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            <DateData date={weather.updatedAt} prefix="Updated at:" />
+            <DateString date={weather.updatedAt} prefix="Updated at:" />
           </Typography>
         </CardContent>
       </CardActionArea>
