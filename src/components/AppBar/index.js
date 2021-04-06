@@ -6,8 +6,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import InputBase from '@material-ui/core/InputBase';
-import Divider from '@material-ui/core/Divider';
 import SearchIcon from '@material-ui/icons/Search';
+import Divider from '@material-ui/core/Divider';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
@@ -19,6 +19,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
 const Settings = lazy(() => import('../../enhanced/Settings'));
+const SearchBox = lazy(() => import('../../enhanced/SearchBox'));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,20 +109,7 @@ export default function ButtonAppBar() {
               Grumpy Weather
             </Typography>
           </Button>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search places"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-
+          <SearchBox />
         </Toolbar>
       </AppBar>
       <Drawer

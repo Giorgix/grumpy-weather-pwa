@@ -44,7 +44,8 @@ const weatherUrlByLocation = (location) =>
 const parseResponse = projection({
   temp: 'main.temp',
   description: 'weather.0.description',
-  wind: 'wind'
+  wind: 'wind',
+  name: 'name'
 });
 
 // Write a synchronous outer function that receives the `location` parameter:

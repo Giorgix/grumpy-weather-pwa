@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { useDispatch } from 'react-redux'
 import { Spinner, NotFound } from '../../components';
-import { fetch, branch, withStoreState, withAsyncEffect, withAction, withDispatcher } from '../../hoc';
+import { fetch, branch, withStoreState, withAsyncEffect, withActionEffect, withDispatcher } from '../../hoc';
 import { selectWeather, getWeather } from '../../redux/weather/weatherSlice'
 import { selectLocation, getLocation } from '../../redux/location/locationSlice'
 import { compose, prop, path, isNil } from 'ramda';
@@ -20,21 +20,19 @@ const parseResponse = projection({
 
 
 const withInitialData = compose(
-  // The geoposition data could be requested as an effect or an action
-  //withAsyncEffect(geoFindMePromise, []),
-  withDispatcher(useDispatch),
-  withAction(getLocation, false, false),
   withStoreState(selectLocation, 'location'),
-  withStoreState(selectWeather, 'weather'),
-  branch(({location}) => location && isNil(location.current_lat), NotFound),
+  branch(path(['location', 'loading']), Spinner),
+  branch(({location}) => location && isNil(location.data.current_lat), NotFound('Location not found')),
 )
 
 const withAsyncRequest = compose(
+  withDispatcher(useDispatch),
   // The weather data could be requested as an effect or an action
   //fetch(weatherUrlByLocation, parseResponse),
-  withAction(null, getWeather, 'location'),
+  withActionEffect(null, getWeather, ({location}) => location.data, null),
+  withStoreState(selectWeather, 'weather'),
   branch(path(['weather', 'loading']), Spinner),
-  branch(({weather}) => weather.completed && isNil(weather.data), NotFound),
+  branch(({weather}) => weather.completed && isNil(weather.data), NotFound('Weather not found')),
 )
 
 const enhance = compose(
