@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { path, is } from 'ramda';
+import { path } from 'ramda';
 import { geoFindMePromise, delay, randomNumber, projection } from '../../utils';
 export const locationSlice = createSlice({
   name: 'location',
@@ -9,6 +9,7 @@ export const locationSlice = createSlice({
       loading: true,
       current_loading: true,
       hasGeoLocation: false,
+      error: null
     },
   },
   reducers: {
@@ -18,11 +19,15 @@ export const locationSlice = createSlice({
     },
     setDeviceLocation: (state, action) => {
       state.value.data = action.payload;
-      state.value.hasGeoLocation = is(Number, action.payload.current_lat) && is(Number, action.payload.current_lon);
+      state.value.hasGeoLocation = true;
       state.value.current_completed = true;
       state.value.current_loading = false;
-      state.value.completed = false;
-      state.value.loading = true;
+    },
+    setDeviceLocationError: (state, action) => {
+      state.value.error = action.payload;
+      state.value.hasGeoLocation = false;
+      state.value.current_completed = true;
+      state.value.current_loading = false;
     },
     initGetLocationInfo: (state) => {
       state.value.completed = false;
@@ -48,9 +53,13 @@ export const { setLocation  } = locationSlice.actions;
 export async function getCurrentLocation(dispatch, getState) {
   // TODO if error get previous state and add error data
   dispatch({ type: 'location/initGetDeviceLocation'})
-  const response = await geoFindMePromise()
-    .catch((error) => {console.log(error); return {error: 'Error getting device location :('};})
-  dispatch({ type: 'location/setDeviceLocation', payload: response })
+  try {
+    const response = await geoFindMePromise();
+    dispatch({ type: 'location/setDeviceLocation', payload: response })
+  } catch (error) {
+    dispatch({ type: 'location/setDeviceLocationError', payload: 'Error getting device location :(' })
+  }
+
 }
 
 // we will use https://opencagedata.com/api for Forward and Reverse GeoCoding
@@ -84,12 +93,15 @@ export function getGeocode(location) {
     dispatch({ type: 'location/initGetLocationInfo'})
     // ✅ Now we can use the location value and send it to the server
     //await delay(randomNumber(250, 3000));
-    const response = await fetch(geoCodeUrlByLocation(location.current_lat ? `${location.current_lat}+${location.current_lon}` : location))
-      .then(res => res.json())
-      .then(data => {console.log('GOT GEODATA: ', data); return data;})
-      .then(parseGeoCodeResponse)
-      .catch((error) => {console.log(error); return {error: 'Error getting location info :('}})
-    dispatch({ type: 'location/setLocationInfo', payload: response })
+    try {
+      const response = await fetch(geoCodeUrlByLocation(location.current_lat ? `${location.current_lat}+${location.current_lon}` : location))
+        .then(res => res.json())
+        .then(data => {console.log('GOT GEODATA: ', data); return data;})
+        .then(parseGeoCodeResponse)
+      dispatch({ type: 'location/setLocationInfo', payload: response })
+    } catch (error) {
+      dispatch({ type: 'location/setError', payload: 'Error getting location info :(' })
+    }
   }
 }
 
