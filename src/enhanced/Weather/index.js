@@ -22,7 +22,7 @@ const parseResponse = projection({
 const withInitialData = compose(
   withStoreState(selectLocation, 'location'),
   branch(path(['location', 'loading']), Spinner),
-  branch(({location}) => location && isNil(location.data.current_lat), NotFound('Location not found')),
+  branch(({location}) => location.completed && (!location.data || isNil(location.data.current_lat)), NotFound('Location not found')),
 )
 
 const withAsyncRequest = compose(
