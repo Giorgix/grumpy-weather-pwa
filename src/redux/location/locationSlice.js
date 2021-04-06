@@ -41,8 +41,6 @@ export const locationSlice = createSlice({
       state.value.data = action.payload;
       state.value.completed = true;
       state.value.loading = false;
-      state.value.current_completed = true;
-      state.value.current_loading = false;
     },
   },
 });
