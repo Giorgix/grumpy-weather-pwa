@@ -5,4 +5,4 @@ export {default as withHandlers} from './withHandlers';
 export {default as withStoreState} from './withStoreState';
 export {default as withDispatcher} from './withDispatcher';
 export {default as withAsyncEffect} from './withAsyncEffect';
-export {default as withAction} from './withAction';
+export {default as withActionEffect} from './withActionEffect';

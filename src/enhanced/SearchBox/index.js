@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { useDispatch } from 'react-redux'
-import { withHandlers, withStoreState, withDispatcher, withAction } from '../../hoc';
+import { withHandlers, withStoreState, withDispatcher } from '../../hoc';
 import { compose } from 'ramda';
 import {
   selectWeather
@@ -15,7 +15,7 @@ const enhanced = compose(
   withStoreState(selectLocation, 'location'),
   withDispatcher(useDispatch),
   withHandlers({
-    searchLocation: ({dispatcher}) => (location) => dispatcher(getGeocode(location))
+    searchLocation: ({dispatcher}) => (searchedLocation) => dispatcher(getGeocode(searchedLocation))
   })
 )
 

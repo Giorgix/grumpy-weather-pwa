@@ -1,27 +1,43 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { path } from 'ramda';
+import { path, is } from 'ramda';
 import { geoFindMePromise, delay, randomNumber, projection } from '../../utils';
 export const locationSlice = createSlice({
   name: 'location',
   initialState: {
     value: {
-      current_lat: null,
-      current_lon: null,
+      data: null,
+      loading: true,
+      current_loading: true,
+      hasGeoLocation: false,
     },
   },
   reducers: {
-    setLocation: (state, action) => {
+    initGetDeviceLocation: (state) => {
+      state.value.current_completed = false;
+      state.value.current_loading = true;
+    },
+    setDeviceLocation: (state, action) => {
+      state.value.data = action.payload;
+      state.value.hasGeoLocation = is(Number, action.payload.current_lat) && is(Number, action.payload.current_lon);
+      state.value.current_completed = true;
+      state.value.current_loading = false;
+      state.value.completed = false;
+      state.value.loading = true;
+    },
+    initGetLocationInfo: (state) => {
+      state.value.completed = false;
+      state.value.loading = true;
+    },
+    setLocationInfo: (state, action) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based on those changes
-      state.value = action.payload;
-      //state.value.completed = true;
-      //state.value.loading = false;
-    },
-    initGetLocation: (state) => {
-      state.value.completed = false;
-      state.value.loading = true;
+      state.value.data = action.payload;
+      state.value.completed = true;
+      state.value.loading = false;
+      state.value.current_completed = true;
+      state.value.current_loading = false;
     },
   },
 });
@@ -29,11 +45,12 @@ export const locationSlice = createSlice({
 export const { setLocation  } = locationSlice.actions;
 
 
-export async function getLocation(dispatch, getState) {
+export async function getCurrentLocation(dispatch, getState) {
   // TODO if error get previous state and add error data
+  dispatch({ type: 'location/initGetDeviceLocation'})
   const response = await geoFindMePromise()
-    .catch((error) => {console.log(error); return {error};})
-  dispatch({ type: 'location/setLocation', payload: response })
+    .catch((error) => {console.log(error); return {error: 'Error getting device location :('};})
+  dispatch({ type: 'location/setDeviceLocation', payload: response })
 }
 
 // we will use https://opencagedata.com/api for Forward and Reverse GeoCoding
@@ -64,14 +81,15 @@ const parseGeoCodeResponse = projection({
 export function getGeocode(location) {
   // And then creates and returns the async thunk function:
   return async function getGeocodeThunk(dispatch, getState) {
-    //dispatch({ type: 'location/initGetLocation'})
+    dispatch({ type: 'location/initGetLocationInfo'})
     // ✅ Now we can use the location value and send it to the server
     //await delay(randomNumber(250, 3000));
-    const response = await fetch(geoCodeUrlByLocation(location))
+    const response = await fetch(geoCodeUrlByLocation(location.current_lat ? `${location.current_lat}+${location.current_lon}` : location))
       .then(res => res.json())
       .then(data => {console.log('GOT GEODATA: ', data); return data;})
       .then(parseGeoCodeResponse)
-    dispatch({ type: 'location/setLocation', payload: response })
+      .catch((error) => {console.log(error); return {error: 'Error getting location info :('}})
+    dispatch({ type: 'location/setLocationInfo', payload: response })
   }
 }
 

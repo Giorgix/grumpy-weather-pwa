@@ -35,7 +35,7 @@ export default function Weather({weather, location}) {
         />
         <CardContent>
           <Typography gutterBottom component="p">
-            {location.name}
+            {location.data.name}
           </Typography>
           <Typography gutterBottom variant="h3" component="h2">
             <Temperature degrees={weather.data.temp} unitType={weather.unit} />

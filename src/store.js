@@ -1,4 +1,5 @@
 import { configureStore, combineReducers, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { createFilter, createBlacklistFilter } from 'redux-persist-transform-filter';
 import {
   persistStore,
   persistReducer,
@@ -13,11 +14,16 @@ import storage from 'redux-persist/lib/storage';
 import weatherReducer from './redux/weather/weatherSlice';
 import locationReducer from './redux/location/locationSlice';
 
-const weatherPersistConfig = {
-  key: 'weather',
-  storage,
-  blacklist: ['loading', 'completed']
-}
+// you want to store only a subset of your state of reducer one
+const saveLocationFilter = createFilter(
+  'location',
+  ['value.data', 'value.hasGeoLocation']
+);
+const saveWeatherFilter = createBlacklistFilter(
+  'weather',
+  ['value.loading', 'value.completed']
+);
+
 const rootReducer = combineReducers({
   // use "temperature and/or location" to persist these slices
   weather: weatherReducer,
@@ -25,7 +31,11 @@ const rootReducer = combineReducers({
 })
 const persistConfig = {
   key: 'root',
-  storage
+  storage,
+  transforms: [
+    saveLocationFilter,
+    saveWeatherFilter,
+  ]
 }
 
 
