@@ -1,8 +1,8 @@
 import React from 'react';
-
+import { ErrorText } from '../';
 const NotFound = (text) => () => (
   <div>
-    <h2>{text}</h2>
+    <ErrorText error={text} />
   </div>
 );
 
