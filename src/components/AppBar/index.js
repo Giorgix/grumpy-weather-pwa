@@ -1,12 +1,10 @@
 import React, { lazy } from 'react';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
 import Divider from '@material-ui/core/Divider';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import List from '@material-ui/core/List';
@@ -38,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawerTitle: {
-    fontWeight: 700
+    fontWeight: 700,
   },
   search: {
     position: 'relative',
@@ -105,31 +103,32 @@ export default function ButtonAppBar() {
             <MenuIcon />
           </IconButton>
           <Button className={classes.title} color="inherit" component={Link} to="/">
-            <Typography variant="h6">
-              Grumpy Weather
-            </Typography>
+            <Typography variant="h6">Grumpy Weather</Typography>
           </Button>
           <SearchBox />
         </Toolbar>
       </AppBar>
-      <Drawer
-        anchor="left"
-        open={open}
-        onClose={handleDrawerClose}
-      >
+      <Drawer anchor="left" open={open} onClose={handleDrawerClose}>
         <List className={classes.list}>
           <ListItem key="title">
-            <ListItemText classes={{
-              primary: classes.drawerTitle
-            }} primary="Grumpy Weather" />
+            <ListItemText
+              classes={{
+                primary: classes.drawerTitle,
+              }}
+              primary="Grumpy Weather"
+            />
           </ListItem>
           <Divider />
           <ListItem component={Link} to="/" key="weather" onClick={handleDrawerClose}>
-            <ListItemIcon><WbSunnyIcon /></ListItemIcon>
+            <ListItemIcon>
+              <WbSunnyIcon />
+            </ListItemIcon>
             <ListItemText primary="Weather" />
           </ListItem>
           <ListItem component={Link} to="/settings" key="settings-page" onClick={handleDrawerClose}>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
             <ListItemText primary="Settings" />
           </ListItem>
         </List>
