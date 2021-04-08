@@ -12,7 +12,7 @@ const Weather = lazy(() => import('../../enhanced/Weather'));
 const Settings = lazy(() => import('../../enhanced/Settings'));
 const AppBar = lazy(() => import('../../components/AppBar'));
 
-const ContainerData = ({ location }) => {
+const ContainerData = () => {
   return (
     <Switch>
       <Route path="/settings">

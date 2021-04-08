@@ -1,5 +1,6 @@
 import { curry } from 'ramda';
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { isFunction } from '../utils';
 const WithActionHoc = curry((action, thunk, thunkData, optimizer, BaseComponent) => {
   const MyComp = (props) => {
@@ -7,7 +8,6 @@ const WithActionHoc = curry((action, thunk, thunkData, optimizer, BaseComponent)
     useEffect(() => {
       console.log(props);
       if (thunk && thunkData) {
-        console.log('LOLCATION DAT ATO FETCH: ', props[thunkData]);
         const newThunk = thunk(isFunction(thunkData) ? thunkData(props) : props[thunkData]);
         props.dispatcher(newThunk);
       } else {
@@ -18,6 +18,9 @@ const WithActionHoc = curry((action, thunk, thunkData, optimizer, BaseComponent)
     return <BaseComponent {...props} />;
   };
   MyComp.displayName = 'with-action-effect';
+  MyComp.propTypes = {
+    dispatcher: PropTypes.func,
+  }
   return MyComp;
 });
 

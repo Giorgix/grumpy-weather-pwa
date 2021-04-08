@@ -1,4 +1,5 @@
-import React, { lazy } from 'react'
+import React, { lazy } from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -8,7 +9,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import weatherBg from './weather-bg.jpg'; // Tell webpack this JS file uses this image
-import theme from '../../theme';
 const DateString = lazy(() => import('../Date'));
 const Temperature = lazy(() => import('../Temperature'));
 
@@ -18,17 +18,13 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Weather({weather, location}) {
+const Weather = ({ weather, location }) => {
   const classes = useStyles();
 
   return (
-      <Card>
+    <Card>
       <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          image={weatherBg}
-          title="Contemplative Reptile"
-        />
+        <CardMedia className={classes.media} image={weatherBg} title="Contemplative Reptile" />
         <CardContent>
           <Typography gutterBottom component="p">
             {location.data.name}
@@ -53,5 +49,23 @@ export default function Weather({weather, location}) {
         </Button>
       </CardActions>
     </Card>
-  )
-}
+  );
+};
+
+Weather.propTypes = {
+  weather: PropTypes.shape({
+    data: PropTypes.shape({
+      temp: PropTypes.number,
+      description: PropTypes.string,
+    }),
+    unit: PropTypes.string,
+    updatedAt: PropTypes.number,
+  }),
+  location: PropTypes.shape({
+    data: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+  }),
+};
+
+export default Weather;

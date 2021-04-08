@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
@@ -44,30 +45,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SearchBox({searchLocation}) {
-
+const SearchBox = ({ searchLocation }) => {
   const classes = useStyles();
   const handleInput = (e) => {
     console.log(e);
     if (e.target.value !== '') {
       searchLocation(e.target.value);
     }
-  }
-  const throttleHandleInput = throttle(handleInput, 2000, { 'leading': false });
+  };
+  const throttleHandleInput = throttle(handleInput, 2000, { leading: false });
   return (
     <div className={classes.search}>
-    <div className={classes.searchIcon}>
-      <SearchIcon />
+      <div className={classes.searchIcon}>
+        <SearchIcon />
+      </div>
+      <InputBase
+        placeholder="Search places"
+        classes={{
+          root: classes.inputRoot,
+          input: classes.inputInput,
+        }}
+        inputProps={{ 'aria-label': 'search' }}
+        onChange={throttleHandleInput}
+      />
     </div>
-    <InputBase
-      placeholder="Search places"
-      classes={{
-        root: classes.inputRoot,
-        input: classes.inputInput,
-      }}
-      inputProps={{ 'aria-label': 'search' }}
-      onChange={throttleHandleInput}
-    />
-  </div>
-  )
-}
+  );
+};
+
+SearchBox.propTypes = {
+  searchLocation: PropTypes.func,
+};
+
+export default SearchBox;
