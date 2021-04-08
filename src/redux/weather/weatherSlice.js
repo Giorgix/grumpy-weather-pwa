@@ -49,9 +49,15 @@ export const { switchUnit, updateUnitByValue } = weatherSlice.actions;
 const weatherUrlByLocation = (location) =>
   `https://api.openweathermap.org/data/2.5/weather?lat=${location.current_lat}&lon=${location.current_lon}&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`;
 
+const grumpyMapper = {
+  'broken clouds': 'Tiempo de mierda, enserio...',
+  'few clouds': 'Parece que bien pero no, puede caer fuerte',
+};
+
 const parseResponse = projection({
   temp: 'main.temp',
-  description: 'weather.0.description',
+  description: (data) => grumpyMapper[data.weather[0].description] || data.weather[0].description,
+  icon: (data) => `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
   wind: 'wind',
   name: 'name',
 });
