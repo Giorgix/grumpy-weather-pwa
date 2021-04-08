@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { compose, isNil, path } from 'ramda';
+import { compose, isNil } from 'ramda';
 import { Spinner, NotFound } from '../../components';
 import Container from '@material-ui/core/Container';
 import { withActionEffect, withDispatcher, withStoreState, branch } from '../../hoc';
@@ -11,16 +11,16 @@ const Settings = lazy(() => import('../../enhanced/Settings'));
 const AppBar = lazy(() => import('../../components/AppBar'));
 
 
-const ContainerData = () => {
+const ContainerData = ({location}) => {
   return (
     <Switch>
-    <Route path="/settings">
-      <Settings />
-    </Route>
-    <Route path="/">
-      <Weather />
-    </Route>
-  </Switch>
+      <Route path="/settings">
+        <Settings />
+      </Route>
+      <Route path="/">
+        <Weather />
+      </Route>
+    </Switch>
   )
 }
 

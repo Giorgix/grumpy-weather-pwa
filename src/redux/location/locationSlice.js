@@ -19,15 +19,27 @@ export const locationSlice = createSlice({
     },
     setDeviceLocation: (state, action) => {
       state.value.data = action.payload;
+      state.value.device_error = null;
       state.value.hasGeoLocation = true;
       state.value.current_completed = true;
       state.value.current_loading = false;
     },
     setDeviceLocationError: (state, action) => {
-      state.value.error = action.payload;
+      state.value.device_error = action.payload;
       state.value.hasGeoLocation = false;
       state.value.current_completed = true;
       state.value.current_loading = false;
+    },
+    setLocationInfoError: (state, action) => {
+      state.value.info_error = action.payload;
+      if (state.value.data && state.value.data.name) {
+        state.value.data.name = null;
+      } else {
+        state.value.data = {};
+        state.value.data.name = null;
+      }
+      state.value.completed = true;
+      state.value.loading = false;
     },
     initGetLocationInfo: (state) => {
       state.value.completed = false;
@@ -39,6 +51,7 @@ export const locationSlice = createSlice({
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based on those changes
       state.value.data = action.payload;
+      state.value.info_error = null;
       state.value.completed = true;
       state.value.loading = false;
     },
@@ -96,9 +109,13 @@ export function getGeocode(location) {
         .then(res => res.json())
         .then(data => {console.log('GOT GEODATA: ', data); return data;})
         .then(parseGeoCodeResponse)
-      dispatch({ type: 'location/setLocationInfo', payload: response })
+      if (response.current_lat && response.current_lon) {
+        dispatch({ type: 'location/setLocationInfo', payload: response })
+      } else {
+        throw new Error('Error getting location info :(');
+      }
     } catch (error) {
-      dispatch({ type: 'location/setError', payload: 'Error getting location info :(' })
+      dispatch({ type: 'location/setLocationInfoError', payload: 'Error getting location info :(' })
     }
   }
 }

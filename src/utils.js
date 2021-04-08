@@ -40,7 +40,8 @@ const geoFindMe = (callback) => {
   }
 
   if(!navigator.geolocation) {
-    console.warn('Geolocation is not supported by your browser')
+    //console.warn('Geolocation is not supported by your browser')
+    callback(new Error('Geolocation is not supported by your browser'))
   } else {
     navigator.geolocation.getCurrentPosition(success, error);
   }
