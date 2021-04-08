@@ -7,13 +7,14 @@ export const weatherSlice = createSlice({
     value: {
       unit: 'metric',
       data: null,
+      error: null,
       loading: true,
       completed: false,
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     },
   },
   reducers: {
-    switchUnit: state => {
+    switchUnit: (state) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
@@ -24,7 +25,8 @@ export const weatherSlice = createSlice({
       state.value.unit = action.payload;
     },
     weatherUpdated: (state, action) => {
-      state.value.data = action.payload.temp ? action.payload : null;
+      state.value.data = action.payload;
+      state.value.error = null;
       state.value.completed = true;
       state.value.loading = false;
       state.value.updatedAt = Date.now();
@@ -33,39 +35,53 @@ export const weatherSlice = createSlice({
       state.value.completed = false;
       state.value.loading = true;
     },
+    setWeatherError: (state, action) => {
+      state.value.error = action.error;
+      state.value.data = null;
+      state.value.completed = true;
+      state.value.loading = false;
+    },
   },
 });
 
-export const { switchUnit, updateUnitByValue  } = weatherSlice.actions;
+export const { switchUnit, updateUnitByValue } = weatherSlice.actions;
 
 const weatherUrlByLocation = (location) =>
-  `https://api.openweathermap.org/data/2.5/weather?lat=${location.current_lat}&lon=${location.current_lon}&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`
+  `https://api.openweathermap.org/data/2.5/weather?lat=${location.current_lat}&lon=${location.current_lon}&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`;
 
 const parseResponse = projection({
   temp: 'main.temp',
   description: 'weather.0.description',
   wind: 'wind',
-  name: 'name'
+  name: 'name',
 });
 
 // Write a synchronous outer function that receives the `location` parameter:
 export function getWeather(location) {
   // And then creates and returns the async thunk function:
   return async function getWeatherThunk(dispatch, getState) {
-    dispatch({ type: 'weather/initGetWeather'})
+    dispatch({ type: 'weather/initGetWeather' });
     // ✅ Now we can use the location value and send it to the server
     //await delay(randomNumber(250, 3000));
-    const response = await fetch(weatherUrlByLocation(location))
-      .then(res => res.json())
-      .then(parseResponse)
-    dispatch({ type: 'weather/weatherUpdated', payload: response })
-  }
+    try {
+      const response = await fetch(weatherUrlByLocation(location))
+        .then((res) => res.json())
+        .then(parseResponse);
+      if (response.temp && response.name) {
+        dispatch({ type: 'weather/weatherUpdated', payload: response });
+      } else {
+        throw new Error('Error getting weather :(');
+      }
+    } catch (error) {
+      dispatch({ type: 'weather/setWeatherError', error: 'Error getting weather :(' });
+    }
+  };
 }
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
-export const selectWeather = state => state.weather.value;
-export const selectWeatherUnit = state => state.weather.value.unit;
+export const selectWeather = (state) => state.weather.value;
+export const selectWeatherUnit = (state) => state.weather.value.unit;
 
 export default weatherSlice.reducer;
