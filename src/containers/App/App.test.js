@@ -8,8 +8,8 @@ import App from '.';
 
 describe('App', () => {
   afterEach(() => {
-    fetchMock.restore()
-  })
+    fetchMock.restore();
+  });
   const initialState = {
     location: {
       value: {
@@ -21,47 +21,53 @@ describe('App', () => {
         completed: false,
         current_loading: true,
         current_completed: false,
-      }
-    }
-  }
-  let store,wrapper
+      },
+    },
+  };
+  let store, wrapper;
 
   it('Shows Spinner on first load', () => {
-    render(<App />,{initialState})
+    render(<App />, { initialState });
 
-    expect(screen.getByTestId('skeleton')).not.toBeNull()
-  })
-  it('Shows Weather after loading', async() => {
-    fetchMock.get('https://api.opencagedata.com/geocode/v1/json?q=44+3.4&key=f62e33ffb4294e3cb537350fde241077', {
-      results: [
-        {
-          geometry: {
-            lat: 44,
-            lng: 3.5
+    expect(screen.getByTestId('skeleton')).not.toBeNull();
+  });
+  it('Shows Weather after loading', async () => {
+    fetchMock.get(
+      'https://api.opencagedata.com/geocode/v1/json?q=44+3.4&key=f62e33ffb4294e3cb537350fde241077',
+      {
+        results: [
+          {
+            geometry: {
+              lat: 44,
+              lng: 3.5,
+            },
+            components: {
+              city: 'Madrid',
+              quarter: 'Goya',
+            },
           },
-          components: {
-            city: 'Madrid',
-            quarter: 'Goya'
-          }
-        }
-      ],
-      headers: { 'content-type': 'application/json' }
-    })
-    fetchMock.get('https://api.openweathermap.org/data/2.5/weather?lat=44&lon=3.5&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417', {
-      main: {
-        temp: '30'
+        ],
+        headers: { 'content-type': 'application/json' },
       },
-      weather: [
-        {
-          description: 'clear skies'
-        }
-      ],
-      wind: '30kmh',
-      name: 'Madrid centro',
-      headers: { 'content-type': 'application/json' }
-    })
-    render(<App />, {initialState});
-    const tempElement = await waitFor(() => screen.getByText(/30/i), {timeout: 3000})
+    );
+    fetchMock.get(
+      'https://api.openweathermap.org/data/2.5/weather?lat=44&lon=3.5&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417',
+      {
+        main: {
+          temp: '30',
+        },
+        weather: [
+          {
+            description: 'clear skies',
+          },
+        ],
+        wind: '30kmh',
+        name: 'Madrid centro',
+        headers: { 'content-type': 'application/json' },
+      },
+    );
+    render(<App />, { initialState });
+    const tempElement = await waitFor(() => screen.getByText(/30/i), { timeout: 3000 });
     expect(tempElement).toBeInTheDocument();
-  })
-})
+  });
+});

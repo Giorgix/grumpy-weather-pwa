@@ -1,18 +1,18 @@
-import {curry, is, map, path} from 'ramda';
+import { curry, is, map, path } from 'ramda';
 
-const {entries} = Object;
-const {random, trunc} = Math;
+const { entries } = Object;
+const { random, trunc } = Math;
 
 export const isFunction = is(Function);
 
 export const mapKeys = curry((f, o) => {
   return entries(o).reduce((mapped, [key, value]) => {
-    return {...mapped, [f(key)]: value};
+    return { ...mapped, [f(key)]: value };
   }, {});
 });
 
 export const projection = curry((descriptor, obj) => {
-  return map(getter => {
+  return map((getter) => {
     return isFunction(getter) ? getter(obj) : path(getter.split('.'), obj);
   }, descriptor);
 });
@@ -21,38 +21,35 @@ export const randomNumber = (min, max) => {
   return trunc(random() * (max - min) + min);
 };
 
-export const delay = t => new Promise(resolve => setTimeout(resolve, t));
+export const delay = (t) => new Promise((resolve) => setTimeout(resolve, t));
 
 const geoFindMe = (callback) => {
-
-
   function success(position) {
     console.log('GOT POSITION: ', position);
-    const latitude  = position.coords.latitude;
+    const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
-    callback(null, {current_lat: latitude, current_lon: longitude})
+    callback(null, { current_lat: latitude, current_lon: longitude });
     //changeState({current_lat: latitude, current_lon: longitude});
   }
 
   function error() {
     console.error('Unable to retrieve your location');
-    callback(new Error('Error getting location'))
+    callback(new Error('Error getting location'));
   }
 
-  if(!navigator.geolocation) {
+  if (!navigator.geolocation) {
     //console.warn('Geolocation is not supported by your browser')
-    callback(new Error('Geolocation is not supported by your browser'))
+    callback(new Error('Geolocation is not supported by your browser'));
   } else {
     navigator.geolocation.getCurrentPosition(success, error);
   }
+};
 
-}
-
-export const geoFindMePromise = function() {
+export const geoFindMePromise = function () {
   return new Promise((resolve, reject) => {
     geoFindMe((err, data) => {
       if (err) reject(err);
-      else resolve(data)
-    })
-  })
-}
+      else resolve(data);
+    });
+  });
+};

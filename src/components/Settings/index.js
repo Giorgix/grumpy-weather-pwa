@@ -1,11 +1,12 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
-export default function Settings({tempUnit, changeTempUnit}) {
+const Settings = ({ tempUnit, changeTempUnit }) => {
   return (
     <div>
       <h2>Current temp is {tempUnit}</h2>
@@ -17,5 +18,12 @@ export default function Settings({tempUnit, changeTempUnit}) {
         </RadioGroup>
       </FormControl>
     </div>
-  )
-}
+  );
+};
+
+Settings.propTypes = {
+  tempUnit: PropTypes.string,
+  changeTempUnit: PropTypes.func,
+};
+
+export default Settings;
