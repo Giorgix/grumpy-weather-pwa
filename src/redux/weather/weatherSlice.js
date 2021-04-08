@@ -39,7 +39,7 @@ export const weatherSlice = createSlice({
 export const { switchUnit, updateUnitByValue  } = weatherSlice.actions;
 
 const weatherUrlByLocation = (location) =>
-  `http://api.openweathermap.org/data/2.5/weather?lat=${location.current_lat}&lon=${location.current_lon}&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`
+  `https://api.openweathermap.org/data/2.5/weather?lat=${location.current_lat}&lon=${location.current_lon}&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`
 
 const parseResponse = projection({
   temp: 'main.temp',

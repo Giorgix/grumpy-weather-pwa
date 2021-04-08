@@ -47,7 +47,7 @@ describe('App', () => {
       ],
       headers: { 'content-type': 'application/json' }
     })
-    fetchMock.get('http://api.openweathermap.org/data/2.5/weather?lat=44&lon=3.5&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417', {
+    fetchMock.get('https://api.openweathermap.org/data/2.5/weather?lat=44&lon=3.5&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417', {
       main: {
         temp: '30'
       },
