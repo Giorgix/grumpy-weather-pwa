@@ -31,11 +31,6 @@
     "eject": "react-scripts eject",
     "postinstall": "husky install"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged && npm test --watchAll=false -- --coverage"
-    }
-  },
   "eslintConfig": {
     "extends": [
       "react-app",
