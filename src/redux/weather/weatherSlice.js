@@ -54,7 +54,7 @@ export function getWeather(location) {
   return async function getWeatherThunk(dispatch, getState) {
     dispatch({ type: 'weather/initGetWeather'})
     // ✅ Now we can use the location value and send it to the server
-    await delay(randomNumber(250, 3000));
+    //await delay(randomNumber(250, 3000));
     const response = await fetch(weatherUrlByLocation(location))
       .then(res => res.json())
       .then(parseResponse)
