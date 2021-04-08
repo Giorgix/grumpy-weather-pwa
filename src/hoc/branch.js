@@ -1,6 +1,9 @@
 import React from 'react';
-import {curry} from 'ramda';
+import { curry } from 'ramda';
 
-export default curry((condition, Left, Right) => props =>
-  condition(props) ? <Left {...props} /> : <Right {...props} />,
-)
+const BranchHOC = curry((condition, Left, Right) => {
+  const MyComp = (props) => (condition(props) ? <Left {...props} /> : <Right {...props} />);
+  MyComp.displayName = 'branch';
+  return MyComp;
+});
+export default BranchHOC;

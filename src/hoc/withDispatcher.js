@@ -1,7 +1,13 @@
 import React from 'react';
-import { curry, merge} from 'ramda';
+import { curry, merge } from 'ramda';
 
-export default curry((dispatcherHook, BaseComponent) => props => {
+const HOC = curry((dispatcherHook, BaseComponent) => {
+  const MyComp = (props) => {
     const dispatcher = dispatcherHook();
-    return <BaseComponent {...merge(props, {dispatcher})}  />;
+    return <BaseComponent {...merge(props, { dispatcher })} />;
+  };
+  MyComp.displayName = 'with-dispatcher';
+  return MyComp;
 });
+
+export default HOC;

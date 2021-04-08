@@ -1,9 +1,13 @@
 import React from 'react';
 import { ErrorText } from '../';
-const NotFound = (text) => () => (
-  <div>
-    <ErrorText error={text} />
-  </div>
-);
+const NotFound = (text) => {
+  const MyComp = () => (
+    <div>
+      <ErrorText error={text} />
+    </div>
+  );
+  MyComp.displayName = 'not-found';
+  return MyComp;
+};
 
 export default NotFound;

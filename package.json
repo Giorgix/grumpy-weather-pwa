@@ -37,6 +37,14 @@
       "react-app/jest"
     ]
   },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+        "eslint --quiet --fix"
+    ],
+    "*.{json,md,html}": [
+        "prettier --write"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
