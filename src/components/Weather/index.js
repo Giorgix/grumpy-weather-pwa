@@ -13,10 +13,6 @@ const DateString = lazy(() => import('../Date'));
 const Temperature = lazy(() => import('../Temperature'));
 
 const useStyles = makeStyles({
-  root: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
-  },
   media: {
     height: 140,
   },
@@ -26,7 +22,7 @@ export default function Weather({weather, location}) {
   const classes = useStyles();
 
   return (
-      <Card className={classes.root}>
+      <Card>
       <CardActionArea>
         <CardMedia
           className={classes.media}

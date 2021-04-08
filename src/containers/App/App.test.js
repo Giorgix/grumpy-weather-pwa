@@ -1,3 +1,4 @@
+import React from 'react';
 import { waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
@@ -28,7 +29,7 @@ describe('App', () => {
   it('Shows Spinner on first load', () => {
     render(<App />,{initialState})
 
-    expect(screen.getByText(/spinner loading/i)).not.toBeNull()
+    expect(screen.getByTestId('skeleton')).not.toBeNull()
   })
   it('Shows Weather after loading', async() => {
     fetchMock.get('https://api.opencagedata.com/geocode/v1/json?q=44+3.4&key=f62e33ffb4294e3cb537350fde241077', {
