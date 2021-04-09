@@ -20,6 +20,10 @@ const useStyles = makeStyles({
   textCenter: {
     textAlign: 'center',
   },
+  icon: {
+    width: '100%',
+    maxWidth: 150,
+  },
 });
 
 const Weather = ({ weather, location }) => {
@@ -30,22 +34,46 @@ const Weather = ({ weather, location }) => {
       <CardActionArea>
         <CardMedia className={classes.media} image={weatherBg} title="Contemplative Reptile" />
         <CardContent>
-          <Typography gutterBottom variant="h5" color="textSecondary">
+          <Typography
+            className={classes.textCenter}
+            gutterBottom
+            variant="h5"
+            color="textSecondary"
+          >
             {weather.data.description}
           </Typography>
-          <Typography component="p">{location.data.name}</Typography>
           <Grid container spacing={3} direction="row" justify="center" alignItems="center">
             <Grid item xs={6}>
+              <Typography variant="caption" component="span">
+                Day{' '}
+                <Temperature
+                  degrees={weather.data.temp_max}
+                  unitType={weather.unit}
+                  showUnit={false}
+                />
+                <span>&#8593;</span> &#8226; Night{' '}
+                <Temperature
+                  degrees={weather.data.temp_min}
+                  unitType={weather.unit}
+                  showUnit={false}
+                />
+                <span>&#8595;</span>
+              </Typography>
               <Typography variant="h3" component="h2">
                 <Temperature degrees={weather.data.temp} unitType={weather.unit} />
               </Typography>
             </Grid>
             <Grid className={classes.textCenter} item xs={6}>
-              <img alt={weather.data.description} src={weather.data.icon} />
+              <img
+                className={classes.icon}
+                alt={weather.data.description}
+                src={weather.data.icon}
+              />
             </Grid>
           </Grid>
+          <Typography component="p">{location.data.name}</Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            <DateString date={weather.updatedAt} prefix="Updated at:" />
+            <DateString date={weather.updatedAt} prefix="" />
           </Typography>
         </CardContent>
       </CardActionArea>

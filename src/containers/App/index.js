@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { compose, isNil } from 'ramda';
 import { makeStyles } from '@material-ui/core/styles';
-import { Spinner, NotFound } from '../../components';
+import { Spinner, NotFound, ErrorBoundary } from '../../components';
 import Container from '@material-ui/core/Container';
 import { withActionEffect, withDispatcher, withStoreState, branch } from '../../hoc';
 import { getCurrentLocation, selectLocation, getGeocode } from '../../redux/location/locationSlice';
@@ -53,13 +53,15 @@ const useStyles = makeStyles({
 export default function App() {
   const classes = useStyles();
   return (
-    <Router>
-      <Suspense fallback={<div>Suspense Loading...</div>}>
-        <AppBar />
-        <Container className={classes.root} maxWidth="sm">
-          <EnhanceContainer />
-        </Container>
-      </Suspense>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <Suspense fallback={<Spinner />}>
+          <AppBar />
+          <Container className={classes.root} maxWidth="sm">
+            <EnhanceContainer />
+          </Container>
+        </Suspense>
+      </Router>
+    </ErrorBoundary>
   );
 }
