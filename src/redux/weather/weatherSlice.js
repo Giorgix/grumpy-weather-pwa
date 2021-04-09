@@ -41,6 +41,10 @@ export const weatherSlice = createSlice({
       state.value.completed = true;
       state.value.loading = false;
     },
+    setWeatherLoading: (state) => {
+      state.value.completed = false;
+      state.value.loading = true;
+    },
   },
 });
 

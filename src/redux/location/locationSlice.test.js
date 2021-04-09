@@ -30,6 +30,7 @@ describe('location slice', () => {
 
     const expectedActions = [
       { type: 'location/initGetLocationInfo' },
+      { type: 'weather/setWeatherLoading' },
       { type: 'location/setLocationInfo', payload: {
         current_lat: 44,
         current_lon: 3.5,
@@ -48,6 +49,7 @@ describe('location slice', () => {
 
     const expectedActions = [
       { type: 'location/initGetLocationInfo' },
+      { type: 'weather/setWeatherLoading' },
       { type: 'location/setLocationInfoError', payload: 'Error getting location info :(' }
     ]
     const store = mockStore({ location: [] })

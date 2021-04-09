@@ -106,6 +106,7 @@ export function getGeocode(location) {
   // And then creates and returns the async thunk function:
   return async function getGeocodeThunk(dispatch, getState) {
     dispatch({ type: 'location/initGetLocationInfo' });
+    dispatch({ type: 'weather/setWeatherLoading' });
     // ✅ Now we can use the location value and send it to the server
     //await delay(randomNumber(250, 3000));
     try {
