@@ -29,7 +29,7 @@ describe('App', () => {
   it('Shows Spinner on first load', () => {
     render(<App />, { initialState });
 
-    expect(screen.getByTestId('skeleton')).not.toBeNull();
+    expect(screen.getAllByTestId('skeleton')).not.toBeNull();
   });
   it('Shows Weather after loading', async () => {
     fetchMock.get(

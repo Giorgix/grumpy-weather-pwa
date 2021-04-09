@@ -9,3 +9,4 @@ export { default as DateString } from './Date';
 export { default as Temperature } from './Temperature';
 export { default as SearchBox } from './SearchBox';
 export { default as ErrorText } from './ErrorText';
+export { default as ErrorBoundary } from './ErrorBoundary';

@@ -56,8 +56,11 @@ const grumpyMapper = {
 
 const parseResponse = projection({
   temp: 'main.temp',
+  temp_max: 'main.temp_max',
+  temp_min: 'main.temp_min',
+  feels_like: 'main.feels_like',
   description: (data) => grumpyMapper[data.weather[0].description] || data.weather[0].description,
-  icon: (data) => `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+  icon: (data) => `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`,
   wind: 'wind',
   name: 'name',
 });
