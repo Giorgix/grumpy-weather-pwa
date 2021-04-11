@@ -42,10 +42,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       width: '20ch',
     },
+    '&::placeholder': {
+      color: theme.palette.white,
+      opacity: 1 /* Firefox */,
+    },
   },
 }));
 
-const SearchBox = ({ searchLocation }) => {
+const SearchBox = ({ searchLocation, location }) => {
   const classes = useStyles();
   const handleInput = (e) => {
     console.log(e);
@@ -60,7 +64,7 @@ const SearchBox = ({ searchLocation }) => {
         <SearchIcon />
       </div>
       <InputBase
-        placeholder="Search places"
+        placeholder={location.data.name || 'Search places'}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
@@ -74,6 +78,11 @@ const SearchBox = ({ searchLocation }) => {
 
 SearchBox.propTypes = {
   searchLocation: PropTypes.func,
+  location: PropTypes.shape({
+    data: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+  }),
 };
 
 export default SearchBox;
