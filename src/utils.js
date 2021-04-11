@@ -53,3 +53,29 @@ export const geoFindMePromise = function () {
     });
   });
 };
+
+export const degreeToCard = (value) => {
+  value = parseFloat(value);
+  if (value <= 11.25) return 'N';
+  value -= 11.25;
+  let allDirections = [
+    'NNE',
+    'NE',
+    'ENE',
+    'E',
+    'ESE',
+    'SE',
+    'SSE',
+    'S',
+    'SSW',
+    'SW',
+    'WSW',
+    'W',
+    'WNW',
+    'NW',
+    'NNW',
+    'N',
+  ];
+  let dIndex = parseInt(value / 22.5);
+  return allDirections[dIndex] ? allDirections[dIndex] : 'N';
+};
