@@ -1,4 +1,5 @@
 export { default as Weather } from './Weather';
+export { default as WeatherSummary } from './WeatherSummary';
 export { default as Spinner } from './Spinner';
 export { default as LocalSpinner } from './LocalSpinner';
 export { default as Settings } from './Settings';

@@ -6,3 +6,4 @@ export { default as withStoreState } from './withStoreState';
 export { default as withDispatcher } from './withDispatcher';
 export { default as withAsyncEffect } from './withAsyncEffect';
 export { default as withActionEffect } from './withActionEffect';
+export { default as toList } from './toList';
