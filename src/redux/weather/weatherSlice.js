@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { path } from 'ramda';
 import { projection, delay, randomNumber } from '../../utils';
 
 export const weatherSlice = createSlice({
@@ -10,6 +11,10 @@ export const weatherSlice = createSlice({
       error: null,
       loading: true,
       completed: false,
+      forecast_data: null,
+      forecast_error: null,
+      forecast_loading: true,
+      forecast_completed: false,
       updatedAt: Date.now(),
     },
   },
@@ -41,6 +46,22 @@ export const weatherSlice = createSlice({
       state.value.completed = true;
       state.value.loading = false;
     },
+    weatherForecastUpdated: (state, action) => {
+      state.value.forecast_data = action.payload;
+      state.value.forecast_error = null;
+      state.value.forecast_completed = true;
+      state.value.forecast_loading = false;
+    },
+    initGetWeatherForecast: (state) => {
+      state.value.forecast_completed = false;
+      state.value.forecast_loading = true;
+    },
+    setWeatherForecastError: (state, action) => {
+      state.value.forecast_error = action.error;
+      state.value.forecast_data = null;
+      state.value.forecast_completed = true;
+      state.value.forecast_loading = false;
+    },
     setWeatherLoading: (state) => {
       state.value.completed = false;
       state.value.loading = true;
@@ -52,6 +73,9 @@ export const { switchUnit, updateUnitByValue } = weatherSlice.actions;
 
 const weatherUrlByLocation = (location) =>
   `https://api.openweathermap.org/data/2.5/weather?lat=${location.current_lat}&lon=${location.current_lon}&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`;
+
+const weatherForecastUrlByLocation = (location) =>
+  `https://api.openweathermap.org/data/2.5/onecall?lat=${location.current_lat}&lon=${location.current_lon}&exclude=minutely&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417`;
 
 const grumpyMapper = {
   'broken clouds': 'Tiempo de mierda, enserio...',
@@ -91,10 +115,63 @@ export function getWeather(location) {
   };
 }
 
+const parseForecastResponse = projection({
+  hourly: 'hourly',
+  daily: (data) =>
+    data.daily.map((dayData) => ({
+      temp: path(['temp', 'day'], dayData),
+      temp_max: path(['temp', 'max'], dayData),
+      temp_min: path(['temp', 'min'], dayData),
+      feels_like: path(['feels_like', 'day'], dayData),
+      description: path(['weather', '0', 'description'], dayData),
+      icon: `https://openweathermap.org/img/wn/${dayData.weather[0].icon}@4x.png`,
+      wind: {
+        speed: dayData.wind_speed,
+        deg: dayData.wind_deg,
+      },
+      date: dayData.dt,
+    })),
+});
+
+// Write a synchronous outer function that receives the `location` parameter:
+export function getWeatherForecast(location) {
+  // And then creates and returns the async thunk function:
+  return async function getWeatherForecastThunk(dispatch, getState) {
+    dispatch({ type: 'weather/initGetWeatherForecast' });
+    // ✅ Now we can use the location value and send it to the server
+    //await delay(randomNumber(250, 3000));
+    try {
+      const response = await fetch(weatherForecastUrlByLocation(location))
+        .then((res) => res.json())
+        .then(parseForecastResponse);
+      if (response.hourly && response.daily) {
+        dispatch({ type: 'weather/weatherForecastUpdated', payload: response });
+      } else {
+        throw new Error('Error getting weather forecast :(');
+      }
+    } catch (error) {
+      dispatch({
+        type: 'weather/setWeatherForecastError',
+        error: 'Error getting weather forecast :(',
+      });
+    }
+  };
+}
+
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
 export const selectWeather = (state) => state.weather.value;
+export const selectTomorrowWeather = (state) => ({
+  data: path(['forecast_data', 'daily', '1'], state.weather.value),
+  unit: state.weather.value.unit,
+  updatedAt: path(['forecast_data', 'daily', '1', 'date'], state.weather.value) * 1000,
+});
+export const selectSevenDayWeather = (state) =>
+  path(['forecast_data', 'daily'], state.weather.value).map((dailyItem) => ({
+    ...dailyItem,
+    unit: state.weather.value.unit,
+  }));
 export const selectWeatherUnit = (state) => state.weather.value.unit;
 
 export default weatherSlice.reducer;

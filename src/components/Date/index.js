@@ -13,7 +13,7 @@ const DateString = ({
   },
   locale = 'es-ES',
 }) => {
-  return <>{`${prefix} ${new Date(date).toLocaleTimeString(locale, format)}`}</>;
+  return <>{`${prefix} ${new Date(date).toLocaleDateString(locale, format)}`}</>;
 };
 
 DateString.propTypes = {
