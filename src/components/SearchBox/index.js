@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
+import { path } from 'ramda';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import throttle from 'lodash.throttle';
 
@@ -64,7 +65,7 @@ const SearchBox = ({ searchLocation, location }) => {
         <SearchIcon />
       </div>
       <InputBase
-        placeholder={location.data.name || 'Search places'}
+        placeholder={path(['data', 'name'], location) || 'Search places'}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,

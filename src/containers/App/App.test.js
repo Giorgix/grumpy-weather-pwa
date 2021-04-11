@@ -54,7 +54,7 @@ describe('App', () => {
       'https://api.openweathermap.org/data/2.5/weather?lat=44&lon=3.5&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417',
       {
         main: {
-          temp: 30,
+          temp: 65,
         },
         weather: [
           {
@@ -67,7 +67,9 @@ describe('App', () => {
       },
     );
     render(<App />, { initialState });
-    const tempElement = await waitFor(() => screen.getByText(/30/i), { timeout: 3000 });
+    const tempElement = await waitFor(() => screen.getByText(/65/i), { timeout: 3000 });
+    const cityElement = await waitFor(() => screen.getByText(/madrid/i), { timeout: 3000 });
     expect(tempElement).toBeInTheDocument();
+    expect(cityElement).toBeInTheDocument();
   });
 });
