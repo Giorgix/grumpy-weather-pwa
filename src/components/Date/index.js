@@ -12,8 +12,15 @@ const DateString = ({
     month: 'long',
   },
   locale = 'es-ES',
+  type = 'date',
 }) => {
-  return <>{`${prefix} ${new Date(date).toLocaleDateString(locale, format)}`}</>;
+  return (
+    <>{`${prefix} ${
+      type === 'date'
+        ? new Date(date).toLocaleDateString(locale, format)
+        : new Date(date).toLocaleTimeString(locale, format)
+    }`}</>
+  );
 };
 
 DateString.propTypes = {
@@ -26,6 +33,7 @@ DateString.propTypes = {
     second: PropTypes.string,
   }),
   locale: PropTypes.string,
+  type: PropTypes.string,
 };
 
 export default DateString;

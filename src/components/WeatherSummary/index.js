@@ -5,6 +5,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Collapse from '@material-ui/core/Collapse';
 import Typography from '@material-ui/core/Typography';
+import { degreeToCard } from '../../utils';
 import theme from '../../theme';
 const DateString = lazy(() => import('../Date'));
 const Temperature = lazy(() => import('../Temperature'));
@@ -34,7 +35,19 @@ const useStyles = makeStyles({
   },
 });
 
-const Weather = ({ description, unit, temp_max, temp_min, temp, icon, date, wind, feels_like }) => {
+const WeatherSummary = ({
+  description,
+  unit,
+  temp_max,
+  temp_min,
+  icon,
+  date,
+  wind,
+  humidity,
+  rain_prob,
+  sunrise,
+  sunset,
+}) => {
   const classes = useStyles();
 
   const dateFormat = {
@@ -43,6 +56,11 @@ const Weather = ({ description, unit, temp_max, temp_min, temp, icon, date, wind
     minute: undefined,
     day: '2-digit',
     month: 'long',
+  };
+  const hourFormat = {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
   };
   const [open, setOpen] = React.useState(false);
 
@@ -89,18 +107,46 @@ const Weather = ({ description, unit, temp_max, temp_min, temp, icon, date, wind
       </Grid>
       <Collapse in={open} timeout="auto" className={classes.fullWidth}>
         <Grid className={classes.collapsable} item xs={12}>
-          <Grid container spacing={3} direction="row" justify="center" alignItems="center">
-            <Grid item xs={7}>
+          <Grid container spacing={1} direction="row" justify="center" alignItems="center">
+            <Grid item xs={6}>
               <Typography variant="caption" color="textSecondary" component="p">
-                Wind: {wind.speed} metre/sec
-              </Typography>
-              <Typography variant="caption" color="textSecondary" component="p">
-                Direction: {wind.deg}º
+                Wind:
               </Typography>
             </Grid>
-            <Grid item xs={5}>
-              <Typography variant="caption" component="span">
-                Feels like: <Temperature degrees={feels_like} unitType={unit} showUnit={false} />
+            <Grid item xs={6}>
+              <Typography variant="caption" color="textSecondary" component="p">
+                {Math.round(wind.speed * 3.6)} km/h {degreeToCard(wind.deg)}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="caption" color="textSecondary" component="p">
+                Humidity:
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="caption" color="textSecondary" component="p">
+                {humidity}%
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="caption" color="textSecondary" component="p">
+                Chance of rain:
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="caption" color="textSecondary" component="p">
+                {rain_prob}%
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="caption" color="textSecondary" component="p">
+                Sunrise/sunset:
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="caption" color="textSecondary" component="p">
+                <DateString type="time" date={sunrise * 1000} prefix="" format={hourFormat} />,{' '}
+                <DateString type="time" date={sunset * 1000} prefix="" format={hourFormat} />
               </Typography>
             </Grid>
           </Grid>
@@ -110,21 +156,23 @@ const Weather = ({ description, unit, temp_max, temp_min, temp, icon, date, wind
   );
 };
 
-Weather.propTypes = {
-  weather: PropTypes.shape({
-    temp: PropTypes.number,
-    temp_min: PropTypes.number,
-    temp_max: PropTypes.number,
-    description: PropTypes.string,
-    icon: PropTypes.string,
-    unit: PropTypes.string,
-    updatedAt: PropTypes.number,
+WeatherSummary.propTypes = {
+  temp: PropTypes.number,
+  temp_min: PropTypes.number,
+  temp_max: PropTypes.number,
+  description: PropTypes.string,
+  icon: PropTypes.string,
+  unit: PropTypes.string,
+  updatedAt: PropTypes.number,
+  date: PropTypes.number,
+  sunrise: PropTypes.number,
+  sunset: PropTypes.number,
+  wind: PropTypes.shape({
+    speed: PropTypes.number,
+    deg: PropTypes.number,
   }),
-  location: PropTypes.shape({
-    data: PropTypes.shape({
-      name: PropTypes.string,
-    }),
-  }),
+  humidity: PropTypes.number,
+  rain_prob: PropTypes.number,
 };
 
-export default Weather;
+export default WeatherSummary;

@@ -123,6 +123,10 @@ const parseForecastResponse = projection({
       temp_max: path(['temp', 'max'], dayData),
       temp_min: path(['temp', 'min'], dayData),
       feels_like: path(['feels_like', 'day'], dayData),
+      humidity: dayData.humidity,
+      rain_prob: dayData.pop ? Math.round(dayData.pop * 100) : 0,
+      sunrise: dayData.sunrise,
+      sunset: dayData.sunset,
       description: path(['weather', '0', 'description'], dayData),
       icon: `https://openweathermap.org/img/wn/${dayData.weather[0].icon}@4x.png`,
       wind: {
