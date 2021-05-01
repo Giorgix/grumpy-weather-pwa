@@ -6,7 +6,6 @@ const WithActionHoc = curry((action, thunk, thunkData, optimizer, BaseComponent)
   const MyComp = (props) => {
     const effectOptimizer = optimizer ? optimizer : props[thunkData] ? [props[thunkData]] : [];
     useEffect(() => {
-      console.log(props);
       if (thunk && thunkData) {
         const newThunk = thunk(isFunction(thunkData) ? thunkData(props) : props[thunkData]);
         props.dispatcher(newThunk);

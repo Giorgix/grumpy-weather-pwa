@@ -23,6 +23,14 @@ describe('App', () => {
         current_completed: false,
       },
     },
+    weather: {
+      value: {
+        loading: true,
+        completed: false,
+        updatedAt: 123123123,
+        unit: 'metric',
+      },
+    },
   };
   let store, wrapper;
 
@@ -51,19 +59,74 @@ describe('App', () => {
       },
     );
     fetchMock.get(
-      'https://api.openweathermap.org/data/2.5/weather?lat=44&lon=3.5&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417',
+      'https://api.openweathermap.org/data/2.5/onecall?lat=44&lon=3.5&exclude=minutely&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417',
       {
-        main: {
-          temp: 65,
-        },
-        weather: [
+        hourly: [
           {
-            description: 'clear skies',
+            dt: 1620036000,
+            temp: 13.09,
+            feels_like: 12,
+            pressure: 1019,
+            humidity: 59,
+            dew_point: 5.39,
+            uvi: 4.26,
+            clouds: 100,
+            visibility: 10000,
+            wind_speed: 4,
+            wind_deg: 98,
+            wind_gust: 5.47,
+            weather: [
+              {
+                id: 804,
+                main: 'Clouds',
+                description: 'overcast clouds',
+                icon: '04d',
+              },
+            ],
+            pop: 0.08,
           },
         ],
-        wind: '30kmh',
-        name: 'Madrid centro',
-        headers: { 'content-type': 'application/json' },
+        daily: [
+          {
+            dt: 1619870400,
+            sunrise: 1619846031,
+            sunset: 1619896185,
+            moonrise: 1619825640,
+            moonset: 1619858580,
+            moon_phase: 0.66,
+            temp: {
+              day: 65,
+              min: 8.08,
+              max: 15.76,
+              night: 11.81,
+              eve: 14.39,
+              morn: 8.45,
+            },
+            feels_like: {
+              day: 14.19,
+              night: 8.45,
+              eve: 12.96,
+              morn: 8.45,
+            },
+            pressure: 1012,
+            humidity: 39,
+            dew_point: 1.67,
+            wind_speed: 6.48,
+            wind_deg: 254,
+            wind_gust: 5.7,
+            weather: [
+              {
+                id: 802,
+                main: 'Clouds',
+                description: 'scattered clouds',
+                icon: '03d',
+              },
+            ],
+            clouds: 40,
+            pop: 0.23,
+            uvi: 7.18,
+          },
+        ],
       },
     );
     render(<App />, { initialState });

@@ -11,10 +11,6 @@ export const weatherSlice = createSlice({
       error: null,
       loading: true,
       completed: false,
-      forecast_data: null,
-      forecast_error: null,
-      forecast_loading: true,
-      forecast_completed: false,
       updatedAt: Date.now(),
     },
   },
@@ -66,6 +62,10 @@ export const weatherSlice = createSlice({
       state.value.completed = false;
       state.value.loading = true;
     },
+    setWeatherLoaded: (state) => {
+      state.value.completed = true;
+      state.value.loading = false;
+    },
   },
 });
 
@@ -94,14 +94,14 @@ const parseResponse = projection({
 });
 
 // Write a synchronous outer function that receives the `location` parameter:
-export function getWeather(location) {
+export function getWeather(locationData) {
   // And then creates and returns the async thunk function:
   return async function getWeatherThunk(dispatch, getState) {
     dispatch({ type: 'weather/initGetWeather' });
     // ✅ Now we can use the location value and send it to the server
     //await delay(randomNumber(250, 3000));
     try {
-      const response = await fetch(weatherUrlByLocation(location))
+      const response = await fetch(weatherUrlByLocation(locationData))
         .then((res) => res.json())
         .then(parseResponse);
       if (response.temp && response.name) {
@@ -138,25 +138,38 @@ const parseForecastResponse = projection({
 });
 
 // Write a synchronous outer function that receives the `location` parameter:
-export function getWeatherForecast(location) {
+export function getWeatherForecast(locationData) {
   // And then creates and returns the async thunk function:
   return async function getWeatherForecastThunk(dispatch, getState) {
-    dispatch({ type: 'weather/initGetWeatherForecast' });
+    const { weather, location } = getState();
+    const previousLocation = location.value.previous_location;
+    const isSameLocation = previousLocation ?
+      (previousLocation.current_lat === locationData.current_lat &&
+        previousLocation.current_lon === locationData.current_lon)
+      : false;
+    const now = Date.now();
+    const lastUpdated = weather.value.updatedAt;
+    let timeDiff = Math.round(now - lastUpdated) / 1000; //in ms
+    if (weather.value.data && timeDiff < 120 && isSameLocation) {
+      dispatch({ type: 'weather/setWeatherLoaded' });
+      return;
+    }
+    dispatch({ type: 'weather/initGetWeather' });
     // ✅ Now we can use the location value and send it to the server
     //await delay(randomNumber(250, 3000));
     try {
-      const response = await fetch(weatherForecastUrlByLocation(location))
+      const response = await fetch(weatherForecastUrlByLocation(locationData))
         .then((res) => res.json())
         .then(parseForecastResponse);
       if (response.hourly && response.daily) {
-        dispatch({ type: 'weather/weatherForecastUpdated', payload: response });
+        dispatch({ type: 'weather/weatherUpdated', payload: response });
       } else {
-        throw new Error('Error getting weather forecast :(');
+        throw new Error('Error getting weather :(');
       }
     } catch (error) {
       dispatch({
-        type: 'weather/setWeatherForecastError',
-        error: 'Error getting weather forecast :(',
+        type: 'weather/setWeatherError',
+        error: 'Error getting weather :(',
       });
     }
   };
@@ -165,14 +178,18 @@ export function getWeatherForecast(location) {
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
-export const selectWeather = (state) => state.weather.value;
+export const selectAllWeather = (state) => state.weather.value;
+export const selectTodayWeather = (state) => ({
+  ...state.weather.value,
+  data: path(['data', 'daily', '0'], state.weather.value),
+});
 export const selectTomorrowWeather = (state) => ({
-  data: path(['forecast_data', 'daily', '1'], state.weather.value),
-  unit: state.weather.value.unit,
-  updatedAt: path(['forecast_data', 'daily', '1', 'date'], state.weather.value) * 1000,
+  ...state.weather.value,
+  data: path(['data', 'daily', '1'], state.weather.value),
+  updatedAt: path(['data', 'daily', '1', 'date'], state.weather.value) * 1000,
 });
 export const selectSevenDayWeather = (state) =>
-  path(['forecast_data', 'daily'], state.weather.value).map((dailyItem) => ({
+  path(['data', 'daily'], state.weather.value).map((dailyItem) => ({
     ...dailyItem,
     unit: state.weather.value.unit,
   }));

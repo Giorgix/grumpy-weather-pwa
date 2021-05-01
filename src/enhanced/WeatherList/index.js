@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Spinner, NotFound } from '../../components';
 import { branch, withStoreState, withActionEffect, withDispatcher, toList } from '../../hoc';
 import {
-  selectWeather,
+  selectAllWeather,
   getWeatherForecast,
   selectSevenDayWeather,
 } from '../../redux/weather/weatherSlice';
@@ -25,14 +25,11 @@ const withAsyncRequest = compose(
   withDispatcher(useDispatch),
   // The weather data could be requested as an effect or an action
   //fetch(weatherUrlByLocation, parseResponse),
-  withActionEffect(null, getWeatherForecast, ({ location }) => location.data, null),
-  withStoreState(selectWeather, 'weather'),
-  branch(path(['weather', 'forecast_loading']), Spinner),
-  branch(
-    ({ weather }) => weather.forecast_completed && isNil(weather.forecast_data),
-    NotFound('Weather not found'),
-  ),
+  //withActionEffect(null, getWeatherForecast, ({ location }) => location.data, null),
+  withStoreState(selectAllWeather, 'weather'),
   withStoreState(selectSevenDayWeather, 'items'),
+  branch(path(['weather', 'loading']), Spinner),
+  branch(({ weather }) => weather.completed && isNil(weather.data), NotFound('Weather not found')),
   toList({ className: 'weather-list-component' }),
 );
 

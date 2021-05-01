@@ -1,13 +1,14 @@
 import React, { lazy, Suspense } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { compose, isNil } from 'ramda';
+import { compose, isNil, path } from 'ramda';
 import { makeStyles } from '@material-ui/core/styles';
 import { Spinner, NotFound, ErrorBoundary } from '../../components';
 import SimpleTabs from '../TabMenu';
 import Container from '@material-ui/core/Container';
 import { withActionEffect, withDispatcher, withStoreState, branch } from '../../hoc';
 import { getCurrentLocation, selectLocation, getGeocode } from '../../redux/location/locationSlice';
+import { getWeatherForecast } from '../../redux/weather/weatherSlice';
 import theme from '../../theme';
 //import Weather from '../../enhanced/Weather';
 const Weather = lazy(() => import('../../enhanced/Weather'));
@@ -53,6 +54,8 @@ const enhance = compose(
     ),
   ),
   withActionEffect(null, getGeocode, ({ location }) => location.data, []),
+  branch(path(['location', 'loading']), Spinner),
+  withActionEffect(null, getWeatherForecast, ({ location }) => location.data, null),
 );
 
 const EnhanceContainer = enhance(ContainerData);
