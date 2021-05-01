@@ -6,7 +6,6 @@ import { curry } from 'ramda';
 
 const toList = curry((options, BaseComponent) => {
   const MyComp = ({ items, keys }) => {
-    console.log('LIST ITEMS: ', items);
     const { className } = options;
 
     return (

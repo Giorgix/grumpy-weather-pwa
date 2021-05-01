@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import { useDispatch } from 'react-redux';
 import { Spinner, NotFound } from '../../components';
 import { branch, withStoreState, withActionEffect, withDispatcher } from '../../hoc';
-import { selectWeather, getWeather } from '../../redux/weather/weatherSlice';
+import { selectTodayWeather } from '../../redux/weather/weatherSlice';
 import { selectLocation } from '../../redux/location/locationSlice';
 import { compose, path, isNil } from 'ramda';
 //import { projection, geoFindMePromise } from '../../utils';
@@ -31,8 +31,8 @@ const withAsyncRequest = compose(
   withDispatcher(useDispatch),
   // The weather data could be requested as an effect or an action
   //fetch(weatherUrlByLocation, parseResponse),
-  withActionEffect(null, getWeather, ({ location }) => location.data, null),
-  withStoreState(selectWeather, 'weather'),
+  //withActionEffect(null, getWeather, ({ location }) => location.data, null),
+  withStoreState(selectTodayWeather, 'weather'),
   branch(path(['weather', 'loading']), Spinner),
   branch(({ weather }) => weather.completed && isNil(weather.data), NotFound('Weather not found')),
 );

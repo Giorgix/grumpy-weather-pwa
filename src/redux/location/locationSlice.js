@@ -6,6 +6,7 @@ export const locationSlice = createSlice({
   initialState: {
     value: {
       data: null,
+      previous_location: null,
       loading: true,
       current_loading: true,
       hasGeoLocation: false,
@@ -50,6 +51,7 @@ export const locationSlice = createSlice({
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based on those changes
+      state.value.previous_location = state.value.data;
       state.value.data = action.payload;
       state.value.info_error = null;
       state.value.completed = true;
@@ -116,10 +118,6 @@ export function getGeocode(location) {
         ),
       )
         .then((res) => res.json())
-        .then((data) => {
-          console.log('GOT GEODATA: ', data);
-          return data;
-        })
         .then(parseGeoCodeResponse);
       if (response.current_lat && response.current_lon) {
         dispatch({ type: 'location/setLocationInfo', payload: response });

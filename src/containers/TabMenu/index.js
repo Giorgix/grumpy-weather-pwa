@@ -50,12 +50,16 @@ const SimpleTabs = ({ tabs }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  console.log(tabs);
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" centered>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="simple tabs example"
+          variant="fullWidth"
+        >
           {(tabs || []).map((tabData, index) => (
             <Tab key={index} label={tabData.label} {...a11yProps(index)} />
           ))}

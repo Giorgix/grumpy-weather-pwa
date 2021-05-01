@@ -53,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
 const SearchBox = ({ searchLocation, location }) => {
   const classes = useStyles();
   const handleInput = (e) => {
-    console.log(e);
     if (e.target.value !== '') {
       searchLocation(e.target.value);
     }

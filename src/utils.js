@@ -25,7 +25,6 @@ export const delay = (t) => new Promise((resolve) => setTimeout(resolve, t));
 
 const geoFindMe = (callback) => {
   function success(position) {
-    console.log('GOT POSITION: ', position);
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
     callback(null, { current_lat: latitude, current_lon: longitude });

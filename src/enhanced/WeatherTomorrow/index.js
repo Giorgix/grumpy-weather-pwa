@@ -1,12 +1,8 @@
 import { lazy } from 'react';
 import { useDispatch } from 'react-redux';
 import { Spinner, NotFound } from '../../components';
-import { branch, withStoreState, withActionEffect, withDispatcher } from '../../hoc';
-import {
-  selectWeather,
-  getWeatherForecast,
-  selectTomorrowWeather,
-} from '../../redux/weather/weatherSlice';
+import { branch, withStoreState, withDispatcher, withProps } from '../../hoc';
+import { selectTomorrowWeather } from '../../redux/weather/weatherSlice';
 import { selectLocation } from '../../redux/location/locationSlice';
 import { compose, path, isNil } from 'ramda';
 
@@ -25,14 +21,11 @@ const withAsyncRequest = compose(
   withDispatcher(useDispatch),
   // The weather data could be requested as an effect or an action
   //fetch(weatherUrlByLocation, parseResponse),
-  withActionEffect(null, getWeatherForecast, ({ location }) => location.data, null),
-  withStoreState(selectWeather, 'weather'),
-  branch(path(['weather', 'forecast_loading']), Spinner),
-  branch(
-    ({ weather }) => weather.forecast_completed && isNil(weather.forecast_data),
-    NotFound('Weather not found'),
-  ),
+  //withActionEffect(null, getWeatherForecast, ({ location }) => location.data, null),
   withStoreState(selectTomorrowWeather, 'weather'),
+  branch(path(['weather', 'loading']), Spinner),
+  branch(({ weather }) => weather.completed && isNil(weather.data), NotFound('Weather not found')),
+  withProps({ showDate: false }),
 );
 
 const enhance = compose(withInitialData, withAsyncRequest);

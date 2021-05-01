@@ -26,7 +26,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Weather = ({ weather, location }) => {
+const Weather = ({ weather, location, showDate = true }) => {
   const classes = useStyles();
 
   return (
@@ -72,9 +72,10 @@ const Weather = ({ weather, location }) => {
             </Grid>
           </Grid>
           <Typography component="p">{location.data.name}</Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
+          {showDate && <Typography variant="body2" color="textSecondary" component="p">
             <DateString date={weather.updatedAt} prefix="" />
           </Typography>
+          }
         </CardContent>
       </CardActionArea>
       <CardActions>
@@ -104,6 +105,7 @@ Weather.propTypes = {
       name: PropTypes.string,
     }),
   }),
+  showDate: PropTypes.bool,
 };
 
 export default Weather;
