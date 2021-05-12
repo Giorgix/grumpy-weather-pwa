@@ -1,6 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { path } from 'ramda';
-import { projection, delay, randomNumber } from '../../utils';
+import {
+  projection,
+  delay,
+  randomNumber,
+  checkSameLocation,
+  checkTimeDiffFromNow,
+} from '../../utils';
 
 export const weatherSlice = createSlice({
   name: 'weather',
@@ -143,14 +149,10 @@ export function getWeatherForecast(locationData) {
   return async function getWeatherForecastThunk(dispatch, getState) {
     const { weather, location } = getState();
     const previousLocation = location.value.previous_location;
-    const isSameLocation = previousLocation ?
-      (previousLocation.current_lat === locationData.current_lat &&
-        previousLocation.current_lon === locationData.current_lon)
-      : false;
-    const now = Date.now();
-    const lastUpdated = weather.value.updatedAt;
-    let timeDiff = Math.round(now - lastUpdated) / 1000; //in ms
-    if (weather.value.data && timeDiff < 120 && isSameLocation) {
+    const isSameLocation = checkSameLocation(previousLocation, locationData);
+    const lessThanTwoHours = checkTimeDiffFromNow(weather.value.updatedAt, 120);
+    if (weather.value.data && lessThanTwoHours && isSameLocation) {
+      console.log('AVOIDING REQUEST BEFORE 2 2min');
       dispatch({ type: 'weather/setWeatherLoaded' });
       return;
     }
@@ -163,6 +165,7 @@ export function getWeatherForecast(locationData) {
         .then(parseForecastResponse);
       if (response.hourly && response.daily) {
         dispatch({ type: 'weather/weatherUpdated', payload: response });
+        dispatch({ type: 'location/updatePreviousLocation' });
       } else {
         throw new Error('Error getting weather :(');
       }
@@ -182,11 +185,16 @@ export const selectAllWeather = (state) => state.weather.value;
 export const selectTodayWeather = (state) => ({
   ...state.weather.value,
   data: path(['data', 'daily', '0'], state.weather.value),
+  hourly:
+    path(['data', 'hourly'], state.weather.value) &&
+    path(['data', 'hourly'], state.weather.value).slice(0, 24),
 });
 export const selectTomorrowWeather = (state) => ({
   ...state.weather.value,
   data: path(['data', 'daily', '1'], state.weather.value),
-  updatedAt: path(['data', 'daily', '1', 'date'], state.weather.value) * 1000,
+  hourly:
+    path(['data', 'hourly'], state.weather.value) &&
+    path(['data', 'hourly'], state.weather.value).slice(24, 48),
 });
 export const selectSevenDayWeather = (state) =>
   path(['data', 'daily'], state.weather.value).map((dailyItem) => ({

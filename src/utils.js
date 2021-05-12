@@ -78,3 +78,19 @@ export const degreeToCard = (value) => {
   let dIndex = parseInt(value / 22.5);
   return allDirections[dIndex] ? allDirections[dIndex] : 'N';
 };
+
+export const checkSameLocation = (locationA, locationB) => {
+  console.log('previous location: ', locationA);
+  console.log('new location: ', locationB);
+  return locationA && locationB
+    ? locationA.current_lat === locationB.current_lat &&
+        locationA.current_lon === locationB.current_lon
+    : false;
+};
+
+export const checkTimeDiffFromNow = (pastTime, threshold) => {
+  const now = Date.now();
+  const timeDiff = Math.round(now - pastTime) / 1000; //in ms
+  console.log(`Time diff: ${timeDiff} seconds. Threshold: ${threshold}`);
+  return timeDiff < threshold;
+};
