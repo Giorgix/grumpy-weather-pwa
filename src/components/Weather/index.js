@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import weatherBg from './weather-bg.jpg'; // Tell webpack this JS file uses this image
 const DateString = lazy(() => import('../Date'));
 const Temperature = lazy(() => import('../Temperature'));
+const WeatherChart = lazy(() => import('../WeatherChart'));
 
 const useStyles = makeStyles({
   media: {
@@ -28,7 +29,9 @@ const useStyles = makeStyles({
 
 const Weather = ({ weather, location, showDate = true }) => {
   const classes = useStyles();
-
+  // TODO filter hourly data array to have only from time.now until 6am
+  console.log('WEATHER DATA: ', weather);
+  const chartData = weather.hourly;
   return (
     <Card>
       <CardActionArea>
@@ -76,6 +79,7 @@ const Weather = ({ weather, location, showDate = true }) => {
             <DateString date={weather.updatedAt} prefix="" />
           </Typography>
           }
+          <WeatherChart data={chartData} unitType={weather.unit} />
         </CardContent>
       </CardActionArea>
       <CardActions>

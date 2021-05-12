@@ -43,7 +43,13 @@ describe('location slice', () => {
         },
       },
     ];
-    const store = mockStore({ location: [] });
+    const store = mockStore({
+      location: {
+        value: {
+          previousLocation: { current_lat: 49, current_lon: 7.5 },
+        },
+      },
+    });
     const newThunk = getGeocode({ current_lat: 44, current_lon: 3.5 });
     return store.dispatch(newThunk).then(() => {
       // return of async actions
@@ -61,7 +67,13 @@ describe('location slice', () => {
       { type: 'weather/setWeatherLoading' },
       { type: 'location/setLocationInfoError', payload: 'Error getting location info :(' },
     ];
-    const store = mockStore({ location: [] });
+    const store = mockStore({
+      location: {
+        value: {
+          previousLocation: { current_lat: 49, current_lon: 7.5 },
+        },
+      },
+    });
     const newThunk = getGeocode({ current_lat: 44, current_lon: 3.5 });
     return store.dispatch(newThunk).then(() => {
       // return of async actions

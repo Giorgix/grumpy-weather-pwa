@@ -16,7 +16,9 @@ ReactDOM.render(
       {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
       <CssBaseline />
       <PersistGate loading={null} persistor={persistor}>
-        <App />
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
       </PersistGate>
     </ThemeProvider>
   </Provider>,

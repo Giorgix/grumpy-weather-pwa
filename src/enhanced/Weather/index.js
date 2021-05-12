@@ -28,7 +28,7 @@ const withInitialData = compose(
 );
 
 const withAsyncRequest = compose(
-  withDispatcher(useDispatch),
+  //withDispatcher(useDispatch),
   // The weather data could be requested as an effect or an action
   //fetch(weatherUrlByLocation, parseResponse),
   //withActionEffect(null, getWeather, ({ location }) => location.data, null),

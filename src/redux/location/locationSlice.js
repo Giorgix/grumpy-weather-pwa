@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { path } from 'ramda';
-import { geoFindMePromise, delay, randomNumber, projection } from '../../utils';
+import { geoFindMePromise, delay, randomNumber, projection, checkSameLocation } from '../../utils';
 export const locationSlice = createSlice({
   name: 'location',
   initialState: {
@@ -8,6 +8,7 @@ export const locationSlice = createSlice({
       data: null,
       previous_location: null,
       loading: true,
+      completed: false,
       current_loading: true,
       hasGeoLocation: false,
       error: null,
@@ -30,6 +31,8 @@ export const locationSlice = createSlice({
       state.value.hasGeoLocation = false;
       state.value.current_completed = true;
       state.value.current_loading = false;
+      state.value.completed = true;
+      state.value.loading = false;
     },
     setLocationInfoError: (state, action) => {
       state.value.info_error = action.payload;
@@ -46,16 +49,23 @@ export const locationSlice = createSlice({
       state.value.completed = false;
       state.value.loading = true;
     },
+    setLocationLoaded: (state) => {
+      state.value.completed = true;
+      state.value.loading = false;
+    },
     setLocationInfo: (state, action) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based on those changes
-      state.value.previous_location = state.value.data;
+      state.value.previous_location = state.value.data === null ? action.payload : state.value.data;
       state.value.data = action.payload;
       state.value.info_error = null;
       state.value.completed = true;
       state.value.loading = false;
+    },
+    updatePreviousLocation: (state) => {
+      state.value.previous_location = state.value.data;
     },
   },
 });
@@ -68,6 +78,7 @@ export async function getCurrentLocation(dispatch, getState) {
   try {
     const response = await geoFindMePromise();
     dispatch({ type: 'location/setDeviceLocation', payload: response });
+    dispatch(getGeocode(response));
   } catch (error) {
     dispatch({
       type: 'location/setDeviceLocationError',
@@ -104,9 +115,17 @@ const parseGeoCodeResponse = projection({
 });
 
 // Write a synchronous outer function that receives the `location` parameter:
-export function getGeocode(location) {
+export function getGeocode(locationData) {
   // And then creates and returns the async thunk function:
   return async function getGeocodeThunk(dispatch, getState) {
+    const { location } = getState();
+    const previousLocation = location.value.previous_location;
+    const isSameLocation = checkSameLocation(previousLocation, locationData);
+    if (location.value.data && isSameLocation) {
+      console.log('AVOIDING LOCATION REQUEST');
+      dispatch({ type: 'location/setLocationLoaded' });
+      return;
+    }
     dispatch({ type: 'location/initGetLocationInfo' });
     dispatch({ type: 'weather/setWeatherLoading' });
     // ✅ Now we can use the location value and send it to the server
@@ -114,7 +133,9 @@ export function getGeocode(location) {
     try {
       const response = await fetch(
         geoCodeUrlByLocation(
-          location.current_lat ? `${location.current_lat}+${location.current_lon}` : location,
+          locationData.current_lat
+            ? `${locationData.current_lat}+${locationData.current_lon}`
+            : locationData,
         ),
       )
         .then((res) => res.json())

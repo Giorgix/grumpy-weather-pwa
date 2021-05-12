@@ -46,16 +46,16 @@ const enhance = compose(
   //withAsyncEffect(geoFindMePromise, []),
   withActionEffect(getCurrentLocation, null, null, null),
   withStoreState(selectLocation, 'location'),
-  branch(({ location }) => location && !location.current_completed, Spinner),
-  branch(
+  branch(({ location }) => location && !location.completed, Spinner),
+  /*branch(
     ({ location }) => location && (!location.data || isNil(location.data.current_lat)),
     NotFound(
       'We could not get your current location, enable location or search a location on the top bar',
     ),
-  ),
-  withActionEffect(null, getGeocode, ({ location }) => location.data, []),
-  branch(path(['location', 'loading']), Spinner),
-  withActionEffect(null, getWeatherForecast, ({ location }) => location.data, null),
+  ),*/
+  //withActionEffect(null, getGeocode, ({ location }) => location.data, []),
+  //branch(({ location }) => location && !location.completed, Spinner),
+  withActionEffect(null, getWeatherForecast, ({ location }) => location.data, []),
 );
 
 const EnhanceContainer = enhance(ContainerData);

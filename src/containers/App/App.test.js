@@ -16,6 +16,7 @@ describe('App', () => {
         data: {
           current_lat: 44,
           current_lon: 3.4,
+          name: 'Madrid',
         },
         loading: true,
         completed: false,
@@ -59,7 +60,7 @@ describe('App', () => {
       },
     );
     fetchMock.get(
-      'https://api.openweathermap.org/data/2.5/onecall?lat=44&lon=3.5&exclude=minutely&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417',
+      'https://api.openweathermap.org/data/2.5/onecall?lat=44&lon=3.4&exclude=minutely&units=metric&APPID=8e69078d04cbc142a30de0c0456fe417',
       {
         hourly: [
           {
