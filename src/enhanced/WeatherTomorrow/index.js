@@ -25,7 +25,16 @@ const withAsyncRequest = compose(
   withStoreState(selectTomorrowWeather, 'weather'),
   branch(path(['weather', 'loading']), Spinner),
   branch(({ weather }) => weather.completed && isNil(weather.data), NotFound('Weather not found')),
-  withProps({ showDate: false }),
+  withProps({
+    dateFormat: {
+      hour12: false,
+      hour: undefined,
+      minute: undefined,
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
+    },
+  }),
 );
 
 const enhance = compose(withInitialData, withAsyncRequest);

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import theme from '../../theme';
 
 const useStyles = makeStyles({
   container: {
@@ -10,14 +11,14 @@ const useStyles = makeStyles({
   chart: {
     minHeight: '200px',
     minWidth: '300px',
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.primary.main,
     paddingBottom: '1rem',
   },
   label: {
     fontSize: '0.45rem',
     fontWeight: '700',
     fontFamily: 'sans-serif',
-    fill: '#2D2D2D',
+    fill: '#FEFEFE',
     textAnchor: 'middle',
   },
 });
@@ -35,11 +36,10 @@ const parseTemps = (unitType) => (hourlyData) => {
 };
 const parseIcons = (hourlyData) => {
   const icon = (hourlyData.weather[0] || {}).icon;
-  const iconURL = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-  return iconURL;
+  return icon;
 };
 
-const calculatePoints = (points) => {
+const calculatePoints = (points, unitType) => {
   console.log('POINTS: ', points);
   let data = '00, 110';
   points.forEach((point, index) => {
@@ -47,7 +47,7 @@ const calculatePoints = (points) => {
     if (index === points.length - 1) {
       x += 20;
     }
-    data = data.concat(' ', `${x}, ${75 - point}`);
+    data = data.concat(' ', `${x}, ${unitType === 'metric' ? 75 - point : 125 - point}`);
   });
   // '00,62 40,60 70,68 100,68 130,71 160,74 200,74'
   data = data.concat(' ', `${30 * points.length}, 110`);
@@ -72,7 +72,12 @@ function WeatherChart({ data, unitType }) {
         viewBox={`0 0 ${30 * temps.length} 120`}
         overflow="auto"
       >
-        <polyline fill="#0074d9" stroke="#0074d9" strokeWidth="1" points={calculatePoints(temps)} />
+        <polyline
+          fill={theme.palette.secondary.main}
+          stroke={theme.palette.secondary.main}
+          strokeWidth="1"
+          points={calculatePoints(temps, unitType)}
+        />
         <g className={classes.label}>
           {hours.map((hour, i) => {
             const x = i > 0 ? 30 * i + 10 : 10;
@@ -87,7 +92,7 @@ function WeatherChart({ data, unitType }) {
           {temps.map((temp, i) => {
             const x = i > 0 ? 30 * i + 10 : 10;
             return (
-              <text x={x} y={70 - temp} key={i}>
+              <text x={x} y={unitType === 'metric' ? 70 - temp : 120 - temp} key={i}>
                 º{temp}
               </text>
             );
@@ -96,7 +101,16 @@ function WeatherChart({ data, unitType }) {
         <g className={classes.label}>
           {icons.map((icon, i) => {
             const x = i > 0 ? 30 * i : 0;
-            return <image key={i} href={icon} x={x} y="90" height="20px" width="20px" />;
+            return (
+              <image
+                key={i}
+                href={`https://openweathermap.org/img/wn/${icon}@2x.png`}
+                x={x}
+                y="90"
+                height="20px"
+                width="20px"
+              />
+            );
           })}
         </g>
       </svg>

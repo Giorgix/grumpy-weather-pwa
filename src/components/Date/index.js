@@ -14,13 +14,12 @@ const DateString = ({
   locale = 'es-ES',
   type = 'date',
 }) => {
-  return (
-    <>{`${prefix} ${
-      type === 'date'
-        ? new Date(date).toLocaleDateString(locale, format)
-        : new Date(date).toLocaleTimeString(locale, format)
-    }`}</>
-  );
+  const dateString =
+    type === 'date'
+      ? new Date(date).toLocaleDateString(locale, format)
+      : new Date(date).toLocaleTimeString(locale, format);
+  const formattedDate = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+  return <>{`${prefix} ${formattedDate}`}</>;
 };
 
 DateString.propTypes = {

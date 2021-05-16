@@ -61,9 +61,7 @@ const enhance = compose(
 const EnhanceContainer = enhance(ContainerData);
 
 const useStyles = makeStyles({
-  root: {
-    marginBottom: theme.spacing(2),
-  },
+  root: {},
 });
 
 export default function App() {

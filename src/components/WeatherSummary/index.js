@@ -54,6 +54,7 @@ const WeatherSummary = ({
     hour12: false,
     hour: undefined,
     minute: undefined,
+    weekday: 'long',
     day: '2-digit',
     month: 'long',
   };
